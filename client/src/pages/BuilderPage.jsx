@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { ChevronRight, ChevronLeft, Plus, Trash2, Sparkles, Download, Save } from 'lucide-react'
 import Navbar from '../components/Navbar'
-import ResumePreview from '../components/ResumePreview'
+import ResumePreview from '../components/Resumepreview'
 import { resumeAPI, aiAPI } from '../api'
 import { useAuth } from '../context/AuthContext'
 
