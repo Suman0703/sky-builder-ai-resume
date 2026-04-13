@@ -23,7 +23,7 @@ export default function Navbar() {
             <FileText className="w-5 h-5 text-white" />
           </div>
           <span className="text-white font-extrabold text-lg tracking-tight">
-            Resume<span className="text-blue-200 font-medium">AI</span>
+            SKY<span className="text-blue-200 font-medium">BUILDER</span>
           </span>
         </Link>
 

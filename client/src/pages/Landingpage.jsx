@@ -72,7 +72,7 @@ export default function LandingPage() {
       {/* Features */}
       <section className="bg-gray-50 dark:bg-gray-900 py-12 md:py-20">
         <div className="max-w-5xl mx-auto px-6">
-          <h2 className="font-serif text-2xl md:text-3xl text-gray-900 dark:text-white text-center mb-8 md:mb-12">Why ResumeAI?</h2>
+          <h2 className="font-serif text-2xl md:text-3xl text-gray-900 dark:text-white text-center mb-8 md:mb-12">WHY SKYBUILDER?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {features.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="bg-white dark:bg-gray-800 rounded-2xl p-5 md:p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition">
