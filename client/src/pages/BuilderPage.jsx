@@ -173,7 +173,7 @@ export default function BuilderPage() {
     }
   }
 
-  /* ── Print/PDF*/
+/* ── Print/PDF*/
   const handleDownload = () => {
     const content = document.getElementById('resume-preview').innerHTML
     const w = window.open('', '_blank')
@@ -187,112 +187,98 @@ export default function BuilderPage() {
           <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
           <style>
-            /* Reset & Print Settings */
+            /* Reset & Exact A4 Print Settings */
             @page { size: A4; margin: 0; }
             * { box-sizing: border-box; margin: 0; padding: 0; }
             body { 
-              font-family: 'Inter', -apple-system, sans-serif; 
+              font-family: 'Inter', sans-serif; 
               background: #fff; 
-              color: #111;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
             }
             
-            /* A4 Paper Simulation - Tighter Margins */
+            /* A4 Wrapper - Zero external padding so the header hits the top edges */
             .print-wrapper {
               width: 210mm;
               min-height: 297mm;
-              padding: 10mm 12mm; /* Reduced padding for more content */
               margin: 0 auto;
               background: white;
             }
 
-            /* Typography - Crisper, tighter line heights */
-            h1, h2, h3 { color: #000; line-height: 1.1; }
-            p, span, li { font-size: 9.5pt; line-height: 1.4; color: #222; }
+            /* Custom Tailwind Class Mapping */
+            .bg-brand { background-color: #2b54bc !important; }
+            .text-brand { color: #2b54bc !important; }
+            .text-white { color: #ffffff !important; }
+            .text-blue-100 { color: #dbeafe !important; }
+            .bg-blue-50 { background-color: #eff6ff !important; }
             
-            /* Layout & Spacing - Highly Condensed */
-            .flex { display: flex; }
-            .flex-col { flex-direction: column; }
-            .flex-wrap { flex-wrap: wrap; }
-            .items-center { align-items: center; }
-            .items-baseline { align-items: baseline; }
+            .text-gray-400 { color: #9ca3af; }
+            .text-gray-500 { color: #6b7280; }
+            .text-gray-600 { color: #4b5563; }
+            .text-gray-900 { color: #111827; }
+            
+            .text-red-400 { color: #f87171; }
+            .text-blue-300 { color: #93c5fd; }
+
+            /* Spacing and Layout */
+            .pt-10 { padding-top: 2.5rem; } .pb-8 { padding-bottom: 2rem; }
+            .px-10 { padding-left: 2.5rem; padding-right: 2.5rem; }
+            .p-10 { padding: 2.5rem; }
+            
+            .mb-0\\.5 { margin-bottom: 0.125rem; } .mb-1 { margin-bottom: 0.25rem; }
+            .mb-1\\.5 { margin-bottom: 0.375rem; } .mb-2 { margin-bottom: 0.5rem; }
+            .mb-3 { margin-bottom: 0.75rem; } .mb-4 { margin-bottom: 1rem; }
+            .mb-5 { margin-bottom: 1.25rem; }
+            .mt-0\\.5 { margin-top: 0.125rem; } .mt-1 { margin-top: 0.25rem; }
+            
+            .space-y-6 > * + * { margin-top: 1.5rem; }
+            .space-y-5 > * + * { margin-top: 1.25rem; }
+            .space-y-4 > * + * { margin-top: 1rem; }
+            .space-y-2\\.5 > * + * { margin-top: 0.625rem; }
+            .space-y-1\\.5 > * + * { margin-top: 0.375rem; }
+            .space-y-1 > * + * { margin-top: 0.25rem; }
+
+            /* Flexbox & Grids */
+            .flex { display: flex; } .flex-wrap { flex-wrap: wrap; }
+            .items-center { align-items: center; } .items-start { align-items: flex-start; } .items-baseline { align-items: baseline; }
             .justify-between { justify-content: space-between; }
-            .justify-center { justify-content: center; }
             
-            /* Tighter Gaps */
-            .gap-1 { gap: 0.15rem; } 
-            .gap-2 { gap: 0.35rem; } 
-            .gap-3 { gap: 0.5rem; } 
-            .gap-x-4 { column-gap: 0.75rem; }
+            .gap-1\\.5 { gap: 0.375rem; } .gap-2\\.5 { gap: 0.625rem; } .gap-4 { gap: 1rem; } .gap-8 { gap: 2rem; }
+            .gap-x-4 { column-gap: 1rem; } .gap-x-5 { column-gap: 1.25rem; } 
+            .gap-y-2 { row-gap: 0.5rem; }
             
-            /* Tighter Margins & Padding */
-            .mt-1 { margin-top: 0.15rem; } 
-            .mt-2 { margin-top: 0.25rem; } 
-            .mt-4 { margin-top: 0.5rem; }
-            .mb-1 { margin-bottom: 0.15rem; } 
-            .mb-2 { margin-bottom: 0.25rem; } 
-            .mb-3 { margin-bottom: 0.5rem; } 
-            .mb-4 { margin-bottom: 0.75rem; } 
-            .mb-6 { margin-bottom: 1rem; }
-            
-            .pb-1 { padding-bottom: 0.15rem; } 
-            .pb-4 { padding-bottom: 0.75rem; }
-            .pt-1 { padding-top: 0.15rem; }
+            .ml-4 { margin-left: 1rem; }
 
-            /* Text Styles */
-            .text-xs { font-size: 8.5pt; }
-            .text-sm { font-size: 9.5pt; }
-            .text-base { font-size: 10.5pt; }
-            .text-lg { font-size: 12pt; }
-            .text-2xl { font-size: 16pt; }
-            .text-3xl { font-size: 20pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
-            
-            .font-medium { font-weight: 500; }
-            .font-semibold { font-weight: 600; }
-            .font-bold { font-weight: 700; }
-            .uppercase { text-transform: uppercase; letter-spacing: 0.05em; }
-            .tracking-widest { letter-spacing: 0.08em; }
-            .text-center { text-align: center; }
-            
-            /* Professional Colors */
-            .text-gray-500 { color: #555; }
-            .text-gray-600 { color: #444; }
-            .text-gray-700 { color: #333; }
-            .text-gray-900 { color: #000; }
-            .text-blue-700 { color: #004080; } /* Darker, more corporate blue */
-            .text-blue-800 { color: #002b5e; }
-            
-            /* Borders & Elements */
-            .border-b { border-bottom: 1px solid #ccc; }
-            .border-b-2 { border-bottom: 2px solid #bbb; }
-            .border-blue-200 { border-color: #a3c2e0; }
-            
-            /* Skills Tags - More subtle for print */
-            .rounded-full { border-radius: 4px; } /* Square edges look more professional on paper */
-            .bg-blue-50 { background-color: #f4f7fb !important; }
-            .px-3 { padding-left: 0.4rem; padding-right: 0.4rem; }
-            .py-1 { padding-top: 0.1rem; padding-bottom: 0.1rem; }
+            /* Typography */
+            .text-\\[11px\\] { font-size: 11pt; line-height: 1.4; }
+            .text-xs { font-size: 11.5pt; line-height: 1.5; }
+            .text-\\[13px\\] { font-size: 12.5pt; line-height: 1.3; }
+            .text-\\[14px\\] { font-size: 14pt; line-height: 1.3; }
+            .text-lg { font-size: 16pt; }
+            .text-4xl { font-size: 32pt; line-height: 1.1; }
 
-            /* Lists - Tighter */
-            ul { list-style-type: square; margin-left: 1rem; }
-            li { margin-bottom: 0.1rem; padding-left: 0.1rem; }
+            .font-normal { font-weight: 400; } .font-medium { font-weight: 500; } .font-bold { font-weight: 700; }
+            .uppercase { text-transform: uppercase; } 
+            .tracking-wide { letter-spacing: 0.025em; } .tracking-widest { letter-spacing: 0.1em; }
+            .whitespace-nowrap { white-space: nowrap; } .leading-relaxed { line-height: 1.6; }
+            
+            /* Elements */
+            .rounded-full { border-radius: 9999px; } 
+            .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; } .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+            
+            /* Lists */
+            ul.list-disc { list-style-type: none; padding-left: 0; }
+            ul.list-disc li { position: relative; padding-left: 12px; margin-bottom: 2px; }
+            ul.list-disc li::before { content: "•"; position: absolute; left: 0; color: #6b7280; font-size: 11px; top: 1px; }
 
-            /* Grid */
-            .grid { display: grid; }
-            .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .gap-6 { gap: 1rem; }
+            .grid { display: grid; } .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            
+            /* SVGs */
+            svg { display: inline-block; vertical-align: middle; }
+            .w-3\\.5 { width: 14px; } .h-3\\.5 { height: 14px; }
 
             /* Sections */
-            .space-y-5 > * + * { margin-top: 0.75rem; }
-            .space-y-4 > * + * { margin-top: 0.5rem; }
-            .space-y-3 > * + * { margin-top: 0.35rem; }
-            .space-y-2 > * + * { margin-top: 0.25rem; }
-            .space-y-1 > * + * { margin-top: 0.15rem; }
-
-            /* Prevent Page Breaks inside sections */
-            .break-inside-avoid { break-inside: avoid; page-break-inside: avoid; }
-            section { break-inside: avoid; page-break-inside: avoid; margin-bottom: 6mm; } /* Tighter bottom margin */
+            section { break-inside: avoid; page-break-inside: avoid; }
           </style>
         </head>
         <body>
@@ -300,10 +286,7 @@ export default function BuilderPage() {
             ${content}
           </div>
           <script>
-            // Wait for font to load before printing
-            window.onload = () => {
-              setTimeout(() => { window.print(); window.close(); }, 400);
-            }
+            window.onload = () => { setTimeout(() => { window.print(); window.close(); }, 400); }
           </script>
         </body>
       </html>
