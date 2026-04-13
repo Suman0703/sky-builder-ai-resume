@@ -342,10 +342,10 @@ export default function BuilderPage() {
           {step === 0 && (
             <FormSection title="Personal Information" desc="Your contact details appear at the top of the resume.">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[['firstName', 'First Name', 'Rahul'], ['lastName', 'Last Name', 'Sharma'],
+                {[['firstName', 'First Name', 'Suman'], ['lastName', 'Last Name', 'Devi'],
                 ['jobTitle', 'Job Title / Role', 'Software Engineer'], ['phone', 'Phone', '+91 98765 43210'],
-                ['email', 'Email', 'rahul@email.com'], ['city', 'City / Location', 'Jalandhar, Punjab'],
-                ['linkedin', 'LinkedIn', 'linkedin.com/in/rahul'], ['github', 'GitHub', 'github.com/rahul']
+                ['email', 'Email', 'suman@email.com'], ['city', 'City / Location', 'Jalandhar, Punjab'],
+                ['linkedin', 'LinkedIn', 'linkedin.com/in/suman0307'], ['github', 'GitHub', 'github.com/suman0307']
                 ].map(([key, label, ph]) => (
                   <div key={key}>
                     <label className={lbl}>{label}</label>
