@@ -173,7 +173,7 @@ export default function BuilderPage() {
     }
   }
 
-  /* ── Print/PDF ── */
+  /* ── Print/PDF*/
   const handleDownload = () => {
     const content = document.getElementById('resume-preview').innerHTML
     const w = window.open('', '_blank')
@@ -191,27 +191,27 @@ export default function BuilderPage() {
             @page { size: A4; margin: 0; }
             * { box-sizing: border-box; margin: 0; padding: 0; }
             body { 
-              font-family: 'Inter', sans-serif; 
+              font-family: 'Inter', -apple-system, sans-serif; 
               background: #fff; 
-              color: #1f2937;
+              color: #111;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
             }
             
-            /* A4 Paper Simulation */
+            /* A4 Paper Simulation - Tighter Margins */
             .print-wrapper {
               width: 210mm;
               min-height: 297mm;
-              padding: 15mm 15mm; /* Professional resume margins */
+              padding: 10mm 12mm; /* Reduced padding for more content */
               margin: 0 auto;
               background: white;
             }
 
-            /* Typography */
-            h1, h2, h3 { color: #111827; line-height: 1.2; letter-spacing: -0.02em; }
-            p, span, li { font-size: 10pt; line-height: 1.6; color: #374151; }
+            /* Typography - Crisper, tighter line heights */
+            h1, h2, h3 { color: #000; line-height: 1.1; }
+            p, span, li { font-size: 9.5pt; line-height: 1.4; color: #222; }
             
-            /* Layout & Spacing */
+            /* Layout & Spacing - Highly Condensed */
             .flex { display: flex; }
             .flex-col { flex-direction: column; }
             .flex-wrap { flex-wrap: wrap; }
@@ -219,51 +219,80 @@ export default function BuilderPage() {
             .items-baseline { align-items: baseline; }
             .justify-between { justify-content: space-between; }
             .justify-center { justify-content: center; }
-            .gap-1 { gap: 0.25rem; } .gap-2 { gap: 0.5rem; } .gap-3 { gap: 0.75rem; } .gap-x-4 { column-gap: 1rem; }
             
-            .mt-1 { margin-top: 0.25rem; } .mt-2 { margin-top: 0.5rem; } .mt-4 { margin-top: 1rem; }
-            .mb-1 { margin-bottom: 0.25rem; } .mb-2 { margin-bottom: 0.5rem; } .mb-4 { margin-bottom: 1rem; } .mb-6 { margin-bottom: 1.5rem; }
-            .pb-1 { padding-bottom: 0.25rem; } .pb-4 { padding-bottom: 1rem; }
-            .pt-1 { padding-top: 0.25rem; }
+            /* Tighter Gaps */
+            .gap-1 { gap: 0.15rem; } 
+            .gap-2 { gap: 0.35rem; } 
+            .gap-3 { gap: 0.5rem; } 
+            .gap-x-4 { column-gap: 0.75rem; }
+            
+            /* Tighter Margins & Padding */
+            .mt-1 { margin-top: 0.15rem; } 
+            .mt-2 { margin-top: 0.25rem; } 
+            .mt-4 { margin-top: 0.5rem; }
+            .mb-1 { margin-bottom: 0.15rem; } 
+            .mb-2 { margin-bottom: 0.25rem; } 
+            .mb-3 { margin-bottom: 0.5rem; } 
+            .mb-4 { margin-bottom: 0.75rem; } 
+            .mb-6 { margin-bottom: 1rem; }
+            
+            .pb-1 { padding-bottom: 0.15rem; } 
+            .pb-4 { padding-bottom: 0.75rem; }
+            .pt-1 { padding-top: 0.15rem; }
 
             /* Text Styles */
             .text-xs { font-size: 8.5pt; }
-            .text-sm { font-size: 10pt; }
-            .text-base { font-size: 11pt; }
+            .text-sm { font-size: 9.5pt; }
+            .text-base { font-size: 10.5pt; }
             .text-lg { font-size: 12pt; }
-            .text-2xl { font-size: 18pt; }
-            .text-3xl { font-size: 24pt; font-weight: 700; text-transform: uppercase; }
+            .text-2xl { font-size: 16pt; }
+            .text-3xl { font-size: 20pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
             
             .font-medium { font-weight: 500; }
             .font-semibold { font-weight: 600; }
             .font-bold { font-weight: 700; }
             .uppercase { text-transform: uppercase; letter-spacing: 0.05em; }
-            .tracking-widest { letter-spacing: 0.1em; }
+            .tracking-widest { letter-spacing: 0.08em; }
             .text-center { text-align: center; }
             
-            /* Colors */
-            .text-gray-500 { color: #6b7280; }
-            .text-gray-600 { color: #4b5563; }
-            .text-gray-900 { color: #111827; }
-            .text-blue-700 { color: #1d4ed8; }
-            .text-blue-800 { color: #1e40af; }
+            /* Professional Colors */
+            .text-gray-500 { color: #555; }
+            .text-gray-600 { color: #444; }
+            .text-gray-700 { color: #333; }
+            .text-gray-900 { color: #000; }
+            .text-blue-700 { color: #004080; } /* Darker, more corporate blue */
+            .text-blue-800 { color: #002b5e; }
             
             /* Borders & Elements */
-            .border-b { border-bottom: 1px solid #d1d5db; }
-            .border-b-2 { border-bottom: 2px solid #e5e7eb; }
-            .border-blue-200 { border-color: #bfdbfe; }
-            .rounded-full { border-radius: 9999px; }
-            .bg-blue-50 { background-color: #eff6ff !important; }
-            .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
-            .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+            .border-b { border-bottom: 1px solid #ccc; }
+            .border-b-2 { border-bottom: 2px solid #bbb; }
+            .border-blue-200 { border-color: #a3c2e0; }
+            
+            /* Skills Tags - More subtle for print */
+            .rounded-full { border-radius: 4px; } /* Square edges look more professional on paper */
+            .bg-blue-50 { background-color: #f4f7fb !important; }
+            .px-3 { padding-left: 0.4rem; padding-right: 0.4rem; }
+            .py-1 { padding-top: 0.1rem; padding-bottom: 0.1rem; }
 
-            /* Lists */
-            ul { list-style-type: disc; margin-left: 1.2rem; }
-            li { margin-bottom: 0.2rem; }
+            /* Lists - Tighter */
+            ul { list-style-type: square; margin-left: 1rem; }
+            li { margin-bottom: 0.1rem; padding-left: 0.1rem; }
+
+            /* Grid */
+            .grid { display: grid; }
+            .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .gap-6 { gap: 1rem; }
+
+            /* Sections */
+            .space-y-5 > * + * { margin-top: 0.75rem; }
+            .space-y-4 > * + * { margin-top: 0.5rem; }
+            .space-y-3 > * + * { margin-top: 0.35rem; }
+            .space-y-2 > * + * { margin-top: 0.25rem; }
+            .space-y-1 > * + * { margin-top: 0.15rem; }
 
             /* Prevent Page Breaks inside sections */
             .break-inside-avoid { break-inside: avoid; page-break-inside: avoid; }
-            section { break-inside: avoid; page-break-inside: avoid; margin-bottom: 15mm; }
+            section { break-inside: avoid; page-break-inside: avoid; margin-bottom: 6mm; } /* Tighter bottom margin */
           </style>
         </head>
         <body>
