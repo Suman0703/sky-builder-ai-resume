@@ -4,6 +4,7 @@ import protect from '../middleware/auth.js'
 const router = express.Router()
 router.use(protect)
 
+// 1. SUMMARY ROUTE 
 router.post('/summary', async (req, res) => {
   try {
     const { firstName, jobTitle, skills } = req.body
@@ -47,6 +48,62 @@ router.post('/summary', async (req, res) => {
       parsed = text
         .split(/\n\d+\.\s+/)
         .filter(s => s.trim().length > 20)
+        .slice(0, 3)
+        .map(s => s.trim().replace(/^["'\-\s]+|["'\s]+$/g, ''))
+    }
+
+    res.json({ suggestions: Array.isArray(parsed) ? parsed.slice(0, 3) : [] })
+
+  } catch (err) {
+    console.error('AI route error:', err.message)
+    res.status(500).json({ message: err.message })
+  }
+})
+
+// 2. OBJECTIVE ROUTE (Safely duplicated from your working summary code)
+router.post('/objective', async (req, res) => {
+  try {
+    const { firstName, jobTitle, skills } = req.body
+
+    if (!process.env.GROQ_API_KEY || process.env.GROQ_API_KEY === 'your_groq_api_key_here') {
+      return res.status(400).json({ message: 'GROQ_API_KEY not set in server/.env' })
+    }
+
+    const prompt = `Generate exactly 3 professional career objective options for a person named ${firstName || 'a student'} aiming for a ${jobTitle || 'tech role'} with background in ${skills || 'technology'}. Each should be 1-2 short sentences focused on career goals and value. Return ONLY a JSON array of 3 strings. No markdown, no explanation. Just: ["objective1", "objective2", "objective3"]`
+
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-8b-instant',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 800,
+        temperature: 0.7
+      })
+    })
+
+    const data = await response.json()
+    console.log('Groq objective status:', response.status)
+
+    if (!response.ok) {
+      console.error('Groq objective error:', data)
+      return res.status(500).json({ message: data.error?.message || 'Groq API error' })
+    }
+
+    const text = data.choices?.[0]?.message?.content || '[]'
+    console.log('Raw text from Groq objective:', text)
+
+    let parsed = []
+    try {
+      const clean = text.replace(/```json/g, '').replace(/```/g, '').trim()
+      parsed = JSON.parse(clean)
+    } catch {
+      parsed = text
+        .split(/\n\d+\.\s+/)
+        .filter(s => s.trim().length > 15)
         .slice(0, 3)
         .map(s => s.trim().replace(/^["'\-\s]+|["'\s]+$/g, ''))
     }

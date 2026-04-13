@@ -47,6 +47,7 @@ export default function BuilderPage() {
         return {
           personal: parsed.personal || defaultData.personal,
           summary: parsed.summary || '',
+          objective: parsed.objective || '',
           education: parsed.education?.length ? parsed.education : [emptyEdu()],
           experience: parsed.experience?.length ? parsed.experience : [emptyExp()],
           skills: parsed.skills || [],
@@ -65,6 +66,11 @@ export default function BuilderPage() {
   const [hobbyInput, setHobbyInput] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
   const [suggestions, setSuggestions] = useState([])
+  
+  // NEW: States for AI Objective
+  const [objAiLoading, setObjAiLoading] = useState(false)
+  const [objSuggestions, setObjSuggestions] = useState([])
+
   const [saving, setSaving] = useState(false)
   const [showPreviewMobile, setShowPreviewMobile] = useState(false)
   const { token } = useAuth()
@@ -129,6 +135,28 @@ export default function BuilderPage() {
       console.error('AI error:', msg)
     } finally {
       setAiLoading(false)
+    }
+  }
+
+  /* ── AI Objective ── */
+  const generateObjective = async () => {
+    setObjAiLoading(true)
+    setObjSuggestions([])
+    try {
+      const { firstName, jobTitle } = data.personal
+      const skillStr = data.skills.join(', ') || 'technical skills'
+      const res = await aiAPI.generateObjective({
+        firstName: firstName || 'a student',
+        jobTitle: jobTitle || 'a professional role',
+        skills: skillStr,
+      })
+      setObjSuggestions(res.data.suggestions || [])
+      toast.success('AI Objectives ready!')
+    } catch (err) {
+      const msg = err.response?.data?.message || 'AI unavailable'
+      toast.error(msg)
+    } finally {
+      setObjAiLoading(false)
     }
   }
 
@@ -227,7 +255,7 @@ export default function BuilderPage() {
         </aside>
 
         {/* ── Form Area ── */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-8">
+        <main className="flex-1 overflow-y-auto p-6 pb-28 md:p-8">
           {/* Progress */}
           <div className="mb-6">
             <div className="flex justify-between text-xs text-gray-400 mb-1.5">
@@ -260,18 +288,29 @@ export default function BuilderPage() {
 
           {/* ── STEP 1: Objective ── */}
           {step === 1 && (
-            <FormSection title="Career Objective" desc="A short goal statement — what you want to achieve in your career. 2-3 sentences.">
+            <FormSection title="Career Objective" desc="A short goal statement for your career.">
               <textarea className={inp + ' min-h-[110px] resize-y'}
-                placeholder="e.g. Motivated Computer Science student seeking a software engineering role where I can apply my skills in React and Node.js to build impactful products..."
+                placeholder="e.g. Motivated student seeking..."
                 value={data.objective} onChange={e => setData(d => ({ ...d, objective: e.target.value }))} />
-              <div className="mt-3 p-4 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900">
-                <p className="text-xs font-bold text-blue-800 dark:text-blue-300 mb-2">💡 Tips for a strong objective:</p>
-                <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
-                  <li>• Mention your degree / field of study</li>
-                  <li>• State the role you are targeting</li>
-                  <li>• Highlight 1-2 key skills or strengths</li>
-                  <li>• Keep it under 3 sentences</li>
-                </ul>
+
+              <div className="mt-4">
+                <button onClick={generateObjective} disabled={objAiLoading}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-lg text-sm font-bold hover:bg-blue-200 transition disabled:opacity-60">
+                  <Sparkles className="w-4 h-4" />
+                  {objAiLoading ? 'Generating...' : '✨ Generate Objective with AI'}
+                </button>
+
+                {objSuggestions.length > 0 && (
+                  <div className="mt-4 space-y-3">
+                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Click a suggestion to use it:</p>
+                    {objSuggestions.map((sug, idx) => (
+                      <div key={idx} onClick={() => setData(d => ({ ...d, objective: sug }))}
+                        className="p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl cursor-pointer hover:border-blue-500 transition text-sm text-gray-700 dark:text-gray-300 shadow-sm">
+                        {sug}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </FormSection>
           )}
@@ -589,9 +628,9 @@ export default function BuilderPage() {
       </div>
 
       {/* Mobile preview button*/}
-      <div className="lg:hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
+      <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
         <button onClick={() => setShowPreviewMobile(true)}
-          className="px-3 py-2 rounded-full bg-black text-white font-bold text-sm shadow-xl whitespace-nowrap">
+          className="px-5 py-3 rounded-full bg-black text-white font-bold text-sm shadow-xl whitespace-nowrap">
           👁 Preview
         </button>
       </div>

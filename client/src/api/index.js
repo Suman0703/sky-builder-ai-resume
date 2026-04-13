@@ -32,6 +32,7 @@ export const resumeAPI = {
 
 export const aiAPI = {
   generateSummary: (data) => api.post('/ai/summary', data),
+  generateObjective: (data) => api.post('/ai/objective', data),
 }
 
 export default api
