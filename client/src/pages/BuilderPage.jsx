@@ -177,37 +177,108 @@ export default function BuilderPage() {
   const handleDownload = () => {
     const content = document.getElementById('resume-preview').innerHTML
     const w = window.open('', '_blank')
-    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Resume</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-      *{box-sizing:border-box;margin:0;padding:0}
-      body{font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;color:#111;background:#fff}
-      .bg-gradient-to-r{background:linear-gradient(to right,#1e3a8a,#1d4ed8)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-      .text-white{color:#fff!important}.text-blue-200{color:#bfdbfe!important}.text-blue-100{color:#dbeafe!important}
-      .text-blue-800{color:#1e40af!important}.text-gray-900{color:#111827!important}.text-gray-600{color:#4b5563!important}
-      .text-gray-500{color:#6b7280!important}.text-gray-400{color:#9ca3af!important}
-      .font-bold{font-weight:700!important}.font-semibold{font-weight:600!important}
-      .bg-blue-50{background:#eff6ff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-      .border-blue-100{border-color:#dbeafe!important}.border-blue-700{border-color:#1d4ed8!important}
-      .rounded-full{border-radius:9999px!important}
-      .px-7{padding-left:1.75rem!important;padding-right:1.75rem!important}
-      .py-6{padding-top:1.5rem!important;padding-bottom:1.5rem!important}
-      .py-5{padding-top:1.25rem!important;padding-bottom:1.25rem!important}
-      .px-3{padding-left:.75rem!important;padding-right:.75rem!important}
-      .py-0{padding-top:0;padding-bottom:0}.py-0\\.5{padding-top:.125rem!important;padding-bottom:.125rem!important}
-      .mb-2{margin-bottom:.5rem!important}.mb-3{margin-bottom:.75rem!important}.mt-0\\.5{margin-top:.125rem!important}
-      .mt-1{margin-top:.25rem!important}.mt-3{margin-top:.75rem!important}
-      .pb-1{padding-bottom:.25rem!important}.space-y-4>*+*{margin-top:1rem!important}
-      .space-y-0\\.5>*+*{margin-top:.125rem!important}
-      .flex{display:flex!important}.flex-wrap{flex-wrap:wrap!important}
-      .justify-between{justify-content:space-between!important}.items-baseline{align-items:baseline!important}
-      .gap-x-4{column-gap:1rem!important}.gap-y-1{row-gap:.25rem!important}.gap-1\\.5{gap:.375rem!important}
-      .text-2xl{font-size:1.5rem!important}.text-sm{font-size:.875rem!important}
-      .text-xs{font-size:.75rem!important}.tracking-wide{letter-spacing:.025em!important}
-      .tracking-widest{letter-spacing:.1em!important}.uppercase{text-transform:uppercase!important}
-      .border-b-2{border-bottom-width:2px!important}.border-solid{border-style:solid!important}
-      @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-    </style></head><body>${content}<script>window.onload=()=>window.print()<\/script></body></html>`)
+    w.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Resume</title>
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+          <style>
+            /* Reset & Print Settings */
+            @page { size: A4; margin: 0; }
+            * { box-sizing: border-box; margin: 0; padding: 0; }
+            body { 
+              font-family: 'Inter', sans-serif; 
+              background: #fff; 
+              color: #1f2937;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            
+            /* A4 Paper Simulation */
+            .print-wrapper {
+              width: 210mm;
+              min-height: 297mm;
+              padding: 15mm 15mm; /* Professional resume margins */
+              margin: 0 auto;
+              background: white;
+            }
+
+            /* Typography */
+            h1, h2, h3 { color: #111827; line-height: 1.2; letter-spacing: -0.02em; }
+            p, span, li { font-size: 10pt; line-height: 1.6; color: #374151; }
+            
+            /* Layout & Spacing */
+            .flex { display: flex; }
+            .flex-col { flex-direction: column; }
+            .flex-wrap { flex-wrap: wrap; }
+            .items-center { align-items: center; }
+            .items-baseline { align-items: baseline; }
+            .justify-between { justify-content: space-between; }
+            .justify-center { justify-content: center; }
+            .gap-1 { gap: 0.25rem; } .gap-2 { gap: 0.5rem; } .gap-3 { gap: 0.75rem; } .gap-x-4 { column-gap: 1rem; }
+            
+            .mt-1 { margin-top: 0.25rem; } .mt-2 { margin-top: 0.5rem; } .mt-4 { margin-top: 1rem; }
+            .mb-1 { margin-bottom: 0.25rem; } .mb-2 { margin-bottom: 0.5rem; } .mb-4 { margin-bottom: 1rem; } .mb-6 { margin-bottom: 1.5rem; }
+            .pb-1 { padding-bottom: 0.25rem; } .pb-4 { padding-bottom: 1rem; }
+            .pt-1 { padding-top: 0.25rem; }
+
+            /* Text Styles */
+            .text-xs { font-size: 8.5pt; }
+            .text-sm { font-size: 10pt; }
+            .text-base { font-size: 11pt; }
+            .text-lg { font-size: 12pt; }
+            .text-2xl { font-size: 18pt; }
+            .text-3xl { font-size: 24pt; font-weight: 700; text-transform: uppercase; }
+            
+            .font-medium { font-weight: 500; }
+            .font-semibold { font-weight: 600; }
+            .font-bold { font-weight: 700; }
+            .uppercase { text-transform: uppercase; letter-spacing: 0.05em; }
+            .tracking-widest { letter-spacing: 0.1em; }
+            .text-center { text-align: center; }
+            
+            /* Colors */
+            .text-gray-500 { color: #6b7280; }
+            .text-gray-600 { color: #4b5563; }
+            .text-gray-900 { color: #111827; }
+            .text-blue-700 { color: #1d4ed8; }
+            .text-blue-800 { color: #1e40af; }
+            
+            /* Borders & Elements */
+            .border-b { border-bottom: 1px solid #d1d5db; }
+            .border-b-2 { border-bottom: 2px solid #e5e7eb; }
+            .border-blue-200 { border-color: #bfdbfe; }
+            .rounded-full { border-radius: 9999px; }
+            .bg-blue-50 { background-color: #eff6ff !important; }
+            .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+            .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+
+            /* Lists */
+            ul { list-style-type: disc; margin-left: 1.2rem; }
+            li { margin-bottom: 0.2rem; }
+
+            /* Prevent Page Breaks inside sections */
+            .break-inside-avoid { break-inside: avoid; page-break-inside: avoid; }
+            section { break-inside: avoid; page-break-inside: avoid; margin-bottom: 15mm; }
+          </style>
+        </head>
+        <body>
+          <div class="print-wrapper">
+            ${content}
+          </div>
+          <script>
+            // Wait for font to load before printing
+            window.onload = () => {
+              setTimeout(() => { window.print(); window.close(); }, 400);
+            }
+          </script>
+        </body>
+      </html>
+    `)
     w.document.close()
   }
 

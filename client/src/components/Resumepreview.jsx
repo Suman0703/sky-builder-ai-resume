@@ -1,172 +1,190 @@
+import React from 'react'
+
 export default function ResumePreview({ data }) {
-  const { personal, objective, summary, education, experience, skills, projects, achievements, certifications, languages, hobbies } = data
+  if (!data) return null;
+
+  const { personal, objective, summary, education, experience, projects, skills, achievements, certifications, languages, hobbies } = data;
+
+  // Helper to check if an array section actually has data entered
+  const hasData = (arr) => arr && arr.length > 0 && Object.values(arr[0]).some(val => val && val.trim() !== '');
 
   return (
-    <div id="resume-preview" className="bg-white text-gray-900 font-sans text-[11px] leading-relaxed min-h-[700px]">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-900 to-blue-700 text-white px-7 py-6">
-        <h1 className="text-2xl font-bold tracking-wide">
-          {(personal.firstName + ' ' + personal.lastName).trim() || 'Your Name'}
+    <div id="resume-preview" className="bg-white text-gray-900 font-sans p-6 md:p-8 max-w-[210mm] mx-auto shadow-sm">
+      
+      {/* ── HEADER ── */}
+      <header className="text-center border-b-2 border-gray-200 pb-4 mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-1 uppercase">
+          {personal.firstName} <span className="text-blue-700">{personal.lastName}</span>
         </h1>
-        {personal.jobTitle && <p className="text-blue-200 text-sm mt-0.5">{personal.jobTitle}</p>}
-        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-xs text-blue-100">
-          {personal.phone && <span>📞 {personal.phone}</span>}
-          {personal.email && <span>✉ {personal.email}</span>}
-          {personal.city && <span>📍 {personal.city}</span>}
-          {personal.linkedin && <span>🔗 {personal.linkedin}</span>}
-          {personal.github && <span>💻 {personal.github}</span>}
+        {personal.jobTitle && <p className="text-lg font-medium text-gray-600 mb-3">{personal.jobTitle}</p>}
+        
+        <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-1 text-xs text-gray-500">
+          {personal.email && <span>{personal.email}</span>}
+          {personal.phone && <span>• {personal.phone}</span>}
+          {personal.city && <span>• {personal.city}</span>}
+          {personal.linkedin && <span>• {personal.linkedin.replace('https://', '')}</span>}
+          {personal.github && <span>• {personal.github.replace('https://', '')}</span>}
         </div>
-      </div>
+      </header>
 
-      <div className="px-7 py-5 space-y-4">
-
-        {/* Objective */}
-        {objective && (
-          <Section title="Career Objective">
-            <p className="text-gray-600 leading-relaxed">{objective}</p>
-          </Section>
+      <div className="space-y-5">
+        
+        {/* ── SUMMARY / OBJECTIVE ── */}
+        {(summary || objective) && (
+          <section className="break-inside-avoid">
+            <h2 className="text-sm font-bold text-blue-800 uppercase tracking-widest border-b border-gray-200 pb-1 mb-2">Profile</h2>
+            <p className="text-sm text-gray-700 leading-relaxed text-justify">{summary || objective}</p>
+          </section>
         )}
 
-        {/* Summary */}
-        {summary && (
-          <Section title="Profile Summary">
-            <p className="text-gray-600 leading-relaxed">{summary}</p>
-          </Section>
-        )}
-
-        {/* Education */}
-        {education.some(e => e.degree || e.institution) && (
-          <Section title="Education">
-            {education.map((e, i) => e.degree || e.institution ? (
-              <div key={i} className="mb-2">
-                <div className="flex justify-between items-baseline">
-                  <span className="font-bold text-gray-900">{e.degree}</span>
-                  <span className="text-gray-400 text-[10px]">{e.year}</span>
+        {/* ── EDUCATION ── */}
+        {hasData(education) && (
+          <section className="break-inside-avoid">
+            <h2 className="text-sm font-bold text-blue-800 uppercase tracking-widest border-b border-gray-200 pb-1 mb-3">Education</h2>
+            <div className="space-y-3">
+              {education.map((edu, i) => (
+                <div key={i}>
+                  <div className="flex justify-between items-baseline mb-1">
+                    <h3 className="text-sm font-bold text-gray-900">{edu.degree}</h3>
+                    <span className="text-xs font-semibold text-gray-500">{edu.year}</span>
+                  </div>
+                  <div className="flex justify-between items-baseline">
+                    <span className="text-sm font-medium text-gray-700">{edu.institution}</span>
+                    <span className="text-xs font-medium text-blue-700">{edu.grade}</span>
+                  </div>
                 </div>
-                <div className="text-gray-500">{e.institution}{e.grade ? ` · ${e.grade}` : ''}</div>
-              </div>
-            ) : null)}
-          </Section>
-        )}
-
-        {/* Experience */}
-        {experience.some(e => e.title || e.company) && (
-          <Section title="Work Experience">
-            {experience.map((e, i) => e.title || e.company ? (
-              <div key={i} className="mb-3">
-                <div className="flex justify-between items-baseline">
-                  <span className="font-bold text-gray-900">{e.title}</span>
-                  <span className="text-gray-400 text-[10px]">{e.duration}</span>
-                </div>
-                <div className="text-gray-500">{e.company}{e.location ? ` · ${e.location}` : ''}</div>
-                {e.description && (
-                  <ul className="mt-1 space-y-0.5 text-gray-600">
-                    {e.description.split('\n').filter(Boolean).map((line, j) => (
-                      <li key={j}>{line.startsWith('-') ? line : `- ${line}`}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ) : null)}
-          </Section>
-        )}
-
-        {/* Skills */}
-        {skills.length > 0 && (
-          <Section title="Skills">
-            <div className="flex flex-wrap gap-1.5">
-              {skills.map((s, i) => (
-                <span key={i} className="bg-blue-50 text-blue-800 border border-blue-100 rounded-full px-3 py-0.5 text-[10px] font-semibold">{s}</span>
               ))}
             </div>
-          </Section>
+          </section>
         )}
 
-        {/* Projects */}
-        {projects.some(p => p.name) && (
-          <Section title="Projects">
-            {projects.map((p, i) => p.name ? (
-              <div key={i} className="mb-3">
-                <div className="flex justify-between items-baseline">
-                  <span className="font-bold text-gray-900">{p.name}</span>
-                  <span className="text-gray-400 text-[10px]">{p.duration}</span>
+        {/* ── EXPERIENCE ── */}
+        {hasData(experience) && (
+          <section className="break-inside-avoid">
+            <h2 className="text-sm font-bold text-blue-800 uppercase tracking-widest border-b border-gray-200 pb-1 mb-3">Experience</h2>
+            <div className="space-y-4">
+              {experience.map((exp, i) => (
+                <div key={i}>
+                  <div className="flex justify-between items-baseline mb-1">
+                    <h3 className="text-sm font-bold text-gray-900">{exp.title}</h3>
+                    <span className="text-xs font-semibold text-gray-500">{exp.duration}</span>
+                  </div>
+                  <div className="flex justify-between items-baseline mb-2">
+                    <span className="text-sm font-medium text-gray-700">{exp.company}</span>
+                    <span className="text-xs text-gray-500">{exp.location}</span>
+                  </div>
+                  {exp.description && (
+                    <ul className="list-disc list-outside ml-4 text-xs text-gray-700 space-y-1 leading-relaxed">
+                      {exp.description.split('\n').filter(line => line.trim()).map((line, j) => (
+                        <li key={j}>{line.replace(/^- /, '').trim()}</li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
-                {p.tech && <div className="text-gray-500">Tech: {p.tech}</div>}
-                {p.description && (
-                  <ul className="mt-1 space-y-0.5 text-gray-600">
-                    {p.description.split('\n').filter(Boolean).map((line, j) => (
-                      <li key={j}>{line.startsWith('-') ? line : `- ${line}`}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ) : null)}
-          </Section>
+              ))}
+            </div>
+          </section>
         )}
 
-        {/* Achievements */}
-        {achievements?.some(a => a.title) && (
-          <Section title="Achievements">
-            {achievements.map((a, i) => a.title ? (
-              <div key={i} className="mb-2">
-                <div className="flex justify-between items-baseline">
-                  <span className="font-bold text-gray-900">{a.title}</span>
-                  <span className="text-gray-400 text-[10px]">{a.year}</span>
+        {/* ── PROJECTS ── */}
+        {hasData(projects) && (
+          <section className="break-inside-avoid">
+            <h2 className="text-sm font-bold text-blue-800 uppercase tracking-widest border-b border-gray-200 pb-1 mb-3">Projects</h2>
+            <div className="space-y-4">
+              {projects.map((proj, i) => (
+                <div key={i}>
+                  <div className="flex justify-between items-baseline mb-1">
+                    <h3 className="text-sm font-bold text-gray-900">
+                      {proj.name} <span className="text-xs font-medium text-blue-700 font-normal ml-1">| {proj.tech}</span>
+                    </h3>
+                    <span className="text-xs font-semibold text-gray-500">{proj.duration}</span>
+                  </div>
+                  {proj.description && (
+                    <ul className="list-disc list-outside ml-4 text-xs text-gray-700 space-y-1 leading-relaxed">
+                      {proj.description.split('\n').filter(line => line.trim()).map((line, j) => (
+                        <li key={j}>{line.replace(/^- /, '').trim()}</li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
-                {a.description && <div className="text-gray-600 mt-0.5">{a.description}</div>}
-              </div>
-            ) : null)}
-          </Section>
+              ))}
+            </div>
+          </section>
         )}
 
-        {/* Certifications */}
-        {certifications?.some(c => c.name) && (
-          <Section title="Certifications">
-            {certifications.map((c, i) => c.name ? (
-              <div key={i} className="mb-2">
-                <div className="flex justify-between items-baseline">
-                  <span className="font-bold text-gray-900">{c.name}</span>
-                  <span className="text-gray-400 text-[10px]">{c.year}</span>
-                </div>
-                <div className="text-gray-500">{c.issuer}{c.url ? ` · ${c.url}` : ''}</div>
-              </div>
-            ) : null)}
-          </Section>
+        {/* ── SKILLS ── */}
+        {skills && skills.length > 0 && (
+          <section className="break-inside-avoid">
+            <h2 className="text-sm font-bold text-blue-800 uppercase tracking-widest border-b border-gray-200 pb-1 mb-3">Technical Skills</h2>
+            <div className="flex flex-wrap gap-2">
+              {skills.map((skill, i) => (
+                <span key={i} className="bg-blue-50 border border-blue-200 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </section>
         )}
 
-        {/* Languages & Hobbies side by side */}
-        <div className="grid grid-cols-2 gap-4">
-          {languages?.some(l => l.language) && (
-            <Section title="Languages">
-              {languages.map((l, i) => l.language ? (
-                <div key={i} className="flex justify-between mb-1">
-                  <span className="text-gray-700 font-semibold">{l.language}</span>
-                  <span className="text-gray-400 text-[10px]">{l.level}</span>
+        {/* ── ACHIEVEMENTS ── */}
+        {hasData(achievements) && (
+          <section className="break-inside-avoid">
+            <h2 className="text-sm font-bold text-blue-800 uppercase tracking-widest border-b border-gray-200 pb-1 mb-3">Achievements</h2>
+            <ul className="space-y-2">
+              {achievements.map((ach, i) => (
+                <li key={i} className="text-sm text-gray-700 flex flex-col">
+                  <div className="flex justify-between items-baseline">
+                    <span className="font-semibold text-gray-900">{ach.title}</span>
+                    <span className="text-xs text-gray-500">{ach.year}</span>
+                  </div>
+                  {ach.description && <span className="text-xs mt-0.5">{ach.description}</span>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* ── CERTIFICATIONS ── */}
+        {hasData(certifications) && (
+          <section className="break-inside-avoid">
+            <h2 className="text-sm font-bold text-blue-800 uppercase tracking-widest border-b border-gray-200 pb-1 mb-3">Certifications</h2>
+            <div className="space-y-2">
+              {certifications.map((cert, i) => (
+                <div key={i} className="flex justify-between items-baseline">
+                  <span className="text-sm font-medium text-gray-900">{cert.name} <span className="text-gray-500 font-normal">— {cert.issuer}</span></span>
+                  <span className="text-xs text-gray-500">{cert.year}</span>
                 </div>
-              ) : null)}
-            </Section>
-          )}
-          {hobbies?.length > 0 && (
-            <Section title="Hobbies & Interests">
-              <div className="flex flex-wrap gap-1">
-                {hobbies.map((h, i) => (
-                  <span key={i} className="bg-purple-50 text-purple-700 border border-purple-100 rounded-full px-2 py-0.5 text-[10px] font-semibold">{h}</span>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── BOTTOM GRID (Languages & Hobbies) ── */}
+        <div className="grid grid-cols-2 gap-6 break-inside-avoid">
+          {hasData(languages) && (
+            <section>
+              <h2 className="text-sm font-bold text-blue-800 uppercase tracking-widest border-b border-gray-200 pb-1 mb-2">Languages</h2>
+              <ul className="space-y-1">
+                {languages.map((lang, i) => (
+                  <li key={i} className="text-sm text-gray-700 flex justify-between">
+                    <span className="font-medium text-gray-900">{lang.language}</span>
+                    <span className="text-xs text-gray-500">{lang.level}</span>
+                  </li>
                 ))}
-              </div>
-            </Section>
+              </ul>
+            </section>
+          )}
+
+          {hobbies && hobbies.length > 0 && (
+            <section>
+              <h2 className="text-sm font-bold text-blue-800 uppercase tracking-widest border-b border-gray-200 pb-1 mb-2">Interests</h2>
+              <p className="text-sm text-gray-700 leading-relaxed">
+                {hobbies.join(' • ')}
+              </p>
+            </section>
           )}
         </div>
-
       </div>
-    </div>
-  )
-}
-
-function Section({ title, children }) {
-  return (
-    <div>
-      <h2 className="text-[10px] font-bold uppercase tracking-widest text-blue-800 border-b-2 border-blue-700 pb-1 mb-2">{title}</h2>
-      {children}
     </div>
   )
 }
