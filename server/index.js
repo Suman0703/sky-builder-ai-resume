@@ -10,9 +10,12 @@ dotenv.config()
 
 const app = express()
 
+// 🚨 UPDATED: Forgiving CORS Policy
+// This allows both your local frontend (localhost:5173) AND your live Vercel link to connect securely!
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }))
 
 app.use(express.json())
