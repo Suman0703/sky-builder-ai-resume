@@ -173,7 +173,7 @@ export default function BuilderPage() {
     }
   }
 
-/* ── Print/PDF*/
+ /* Print/PDF */
   const handleDownload = () => {
     const content = document.getElementById('resume-preview').innerHTML
     const w = window.open('', '_blank')
@@ -182,102 +182,44 @@ export default function BuilderPage() {
       <html>
         <head>
           <meta charset="UTF-8">
-          <title>Resume</title>
+          <title>Professional Resume</title>
           <link rel="preconnect" href="https://fonts.googleapis.com">
           <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+          <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+          <script src="https://cdn.tailwindcss.com"></script>
           <style>
-            /* Reset & Exact A4 Print Settings */
             @page { size: A4; margin: 0; }
-            * { box-sizing: border-box; margin: 0; padding: 0; }
             body { 
-              font-family: 'Inter', sans-serif; 
-              background: #fff; 
+              font-family: 'Inter', system-ui, sans-serif;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
+              background: white;
             }
-            
-            /* A4 Wrapper - Zero external padding so the header hits the top edges */
             .print-wrapper {
               width: 210mm;
               min-height: 297mm;
               margin: 0 auto;
               background: white;
+              padding: 12mm 0; /* Standard top/bottom document margins */
             }
-
-            /* Custom Tailwind Class Mapping */
-            .bg-brand { background-color: #2b54bc !important; }
-            .text-brand { color: #2b54bc !important; }
-            .text-white { color: #ffffff !important; }
-            .text-blue-100 { color: #dbeafe !important; }
-            .bg-blue-50 { background-color: #eff6ff !important; }
             
-            .text-gray-400 { color: #9ca3af; }
-            .text-gray-500 { color: #6b7280; }
-            .text-gray-600 { color: #4b5563; }
-            .text-gray-900 { color: #111827; }
+            /* Tighter Spacing for standard single-page fit */
+            .p-10 { padding: 1.5rem 2rem !important; } 
             
-            .text-red-400 { color: #f87171; }
-            .text-blue-300 { color: #93c5fd; }
-
-            /* Spacing and Layout */
-            .pt-10 { padding-top: 2.5rem; } .pb-8 { padding-bottom: 2rem; }
-            .px-10 { padding-left: 2.5rem; padding-right: 2.5rem; }
-            .p-10 { padding: 2.5rem; }
+            .space-y-5 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem !important; }
+            .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem !important; }
             
-            .mb-0\\.5 { margin-bottom: 0.125rem; } .mb-1 { margin-bottom: 0.25rem; }
-            .mb-1\\.5 { margin-bottom: 0.375rem; } .mb-2 { margin-bottom: 0.5rem; }
-            .mb-3 { margin-bottom: 0.75rem; } .mb-4 { margin-bottom: 1rem; }
-            .mb-5 { margin-bottom: 1.25rem; }
-            .mt-0\\.5 { margin-top: 0.125rem; } .mt-1 { margin-top: 0.25rem; }
+            .mb-6 { margin-bottom: 1.25rem !important; }
+            .mb-3 { margin-bottom: 0.5rem !important; }
             
-            .space-y-6 > * + * { margin-top: 1.5rem; }
-            .space-y-5 > * + * { margin-top: 1.25rem; }
-            .space-y-4 > * + * { margin-top: 1rem; }
-            .space-y-2\\.5 > * + * { margin-top: 0.625rem; }
-            .space-y-1\\.5 > * + * { margin-top: 0.375rem; }
-            .space-y-1 > * + * { margin-top: 0.25rem; }
-
-            /* Flexbox & Grids */
-            .flex { display: flex; } .flex-wrap { flex-wrap: wrap; }
-            .items-center { align-items: center; } .items-start { align-items: flex-start; } .items-baseline { align-items: baseline; }
-            .justify-between { justify-content: space-between; }
+            /* Typography adjustments for print */
+            h1 { letter-spacing: 0.05em !important; }
+            p, span, li { line-height: 1.45 !important; color: #111 !important; }
+            .italic { font-style: italic; }
             
-            .gap-1\\.5 { gap: 0.375rem; } .gap-2\\.5 { gap: 0.625rem; } .gap-4 { gap: 1rem; } .gap-8 { gap: 2rem; }
-            .gap-x-4 { column-gap: 1rem; } .gap-x-5 { column-gap: 1.25rem; } 
-            .gap-y-2 { row-gap: 0.5rem; }
+            /* Ensure bullets render properly */
+            ul.list-disc { padding-left: 1.2rem; }
             
-            .ml-4 { margin-left: 1rem; }
-
-            /* Typography */
-            .text-\\[11px\\] { font-size: 11pt; line-height: 1.4; }
-            .text-xs { font-size: 11.5pt; line-height: 1.5; }
-            .text-\\[13px\\] { font-size: 12.5pt; line-height: 1.3; }
-            .text-\\[14px\\] { font-size: 14pt; line-height: 1.3; }
-            .text-lg { font-size: 16pt; }
-            .text-4xl { font-size: 32pt; line-height: 1.1; }
-
-            .font-normal { font-weight: 400; } .font-medium { font-weight: 500; } .font-bold { font-weight: 700; }
-            .uppercase { text-transform: uppercase; } 
-            .tracking-wide { letter-spacing: 0.025em; } .tracking-widest { letter-spacing: 0.1em; }
-            .whitespace-nowrap { white-space: nowrap; } .leading-relaxed { line-height: 1.6; }
-            
-            /* Elements */
-            .rounded-full { border-radius: 9999px; } 
-            .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; } .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
-            
-            /* Lists */
-            ul.list-disc { list-style-type: none; padding-left: 0; }
-            ul.list-disc li { position: relative; padding-left: 12px; margin-bottom: 2px; }
-            ul.list-disc li::before { content: "•"; position: absolute; left: 0; color: #6b7280; font-size: 11px; top: 1px; }
-
-            .grid { display: grid; } .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            
-            /* SVGs */
-            svg { display: inline-block; vertical-align: middle; }
-            .w-3\\.5 { width: 14px; } .h-3\\.5 { height: 14px; }
-
-            /* Sections */
             section { break-inside: avoid; page-break-inside: avoid; }
           </style>
         </head>
@@ -286,14 +228,16 @@ export default function BuilderPage() {
             ${content}
           </div>
           <script>
-            window.onload = () => { setTimeout(() => { window.print(); window.close(); }, 400); }
+            setTimeout(() => { 
+              window.print(); 
+              window.close(); 
+            }, 1200);
           </script>
         </body>
       </html>
     `)
     w.document.close()
   }
-
   const progress = Math.round(((step + 1) / STEPS.length) * 100)
 
   /* ── shared input classes ── */
@@ -461,7 +405,6 @@ export default function BuilderPage() {
                 </button>
               </div>
 
-              {/* Added skills */}
               {data.skills.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-4">
                   {data.skills.map(s => (
@@ -473,7 +416,6 @@ export default function BuilderPage() {
                 </div>
               )}
 
-              {/* Suggestions */}
               <div className="mt-5">
                 <p className="text-xs text-gray-400 font-bold uppercase tracking-wide mb-2">Quick add:</p>
                 <div className="flex flex-wrap gap-2">
@@ -722,23 +664,34 @@ export default function BuilderPage() {
       {showPreviewMobile && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end lg:hidden transition-opacity" onClick={() => setShowPreviewMobile(false)}>
           <div className="bg-gray-100 w-full max-h-[85vh] overflow-y-auto rounded-t-3xl shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="sticky top-0 bg-white/90 backdrop-blur-md flex items-center justify-between p-4 border-b border-gray-200 z-10">
-              <span className="font-bold text-gray-800">Resume Preview</span>
+            
+            {/* STICKY HEADER WITH PDF BUTTON */}
+            <div className="sticky top-0 bg-white/95 backdrop-blur-md flex items-center justify-between p-4 border-b border-gray-200 z-10">
+              <span className="font-bold text-gray-800 text-lg">Preview</span>
 
-              {/* Added PDF Button here for mobile! */}
-              <div className="flex items-center gap-3">
-                <button onClick={handleDownload} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 text-blue-800 rounded-lg text-xs font-bold hover:bg-blue-200 transition">
-                  <Download className="w-3.5 h-3.5" /> PDF
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={handleDownload} 
+                  className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold shadow-md hover:bg-blue-700 transition active:scale-95"
+                >
+                  <Download className="w-4 h-4" /> Save PDF
                 </button>
-                <button onClick={() => setShowPreviewMobile(false)} className="text-gray-500 hover:text-gray-800 text-2xl leading-none font-bold px-1">&times;</button>
+                <button 
+                  onClick={() => setShowPreviewMobile(false)} 
+                  className="text-gray-400 hover:text-gray-800 text-3xl leading-none font-light px-1 mb-1"
+                >
+                  &times;
+                </button>
               </div>
             </div>
 
+            {/* Resume Content */}
             <div className="p-4">
               <div className="bg-white rounded-xl overflow-hidden shadow-md border border-gray-200">
                 <ResumePreview data={data} />
               </div>
             </div>
+            
           </div>
         </div>
       )}
