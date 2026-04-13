@@ -10,11 +10,11 @@ export default function ResumePreview({ data }) {
         </h1>
         {personal.jobTitle && <p className="text-blue-200 text-sm mt-0.5">{personal.jobTitle}</p>}
         <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-xs text-blue-100">
-          {personal.phone    && <span>📞 {personal.phone}</span>}
-          {personal.email    && <span>✉ {personal.email}</span>}
-          {personal.city     && <span>📍 {personal.city}</span>}
+          {personal.phone && <span>📞 {personal.phone}</span>}
+          {personal.email && <span>✉ {personal.email}</span>}
+          {personal.city && <span>📍 {personal.city}</span>}
           {personal.linkedin && <span>🔗 {personal.linkedin}</span>}
-          {personal.github   && <span>💻 {personal.github}</span>}
+          {personal.github && <span>💻 {personal.github}</span>}
         </div>
       </div>
 
