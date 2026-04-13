@@ -66,7 +66,7 @@ export default function BuilderPage() {
   const [hobbyInput, setHobbyInput] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
   const [suggestions, setSuggestions] = useState([])
-  
+
   // NEW: States for AI Objective
   const [objAiLoading, setObjAiLoading] = useState(false)
   const [objSuggestions, setObjSuggestions] = useState([])
@@ -637,13 +637,25 @@ export default function BuilderPage() {
 
       {/* Mobile preview modal */}
       {showPreviewMobile && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-end lg:hidden" onClick={() => setShowPreviewMobile(false)}>
-          <div className="bg-white w-full max-h-[85vh] overflow-y-auto rounded-t-3xl" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-4 border-b">
-              <span className="font-bold text-gray-700">Resume Preview</span>
-              <button onClick={() => setShowPreviewMobile(false)} className="text-gray-400 text-xl font-bold">×</button>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end lg:hidden transition-opacity" onClick={() => setShowPreviewMobile(false)}>
+          <div className="bg-gray-100 w-full max-h-[85vh] overflow-y-auto rounded-t-3xl shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="sticky top-0 bg-white/90 backdrop-blur-md flex items-center justify-between p-4 border-b border-gray-200 z-10">
+              <span className="font-bold text-gray-800">Resume Preview</span>
+
+              {/* Added PDF Button here for mobile! */}
+              <div className="flex items-center gap-3">
+                <button onClick={handleDownload} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 text-blue-800 rounded-lg text-xs font-bold hover:bg-blue-200 transition">
+                  <Download className="w-3.5 h-3.5" /> PDF
+                </button>
+                <button onClick={() => setShowPreviewMobile(false)} className="text-gray-500 hover:text-gray-800 text-2xl leading-none font-bold px-1">&times;</button>
+              </div>
             </div>
-            <ResumePreview data={data} />
+
+            <div className="p-4">
+              <div className="bg-white rounded-xl overflow-hidden shadow-md border border-gray-200">
+                <ResumePreview data={data} />
+              </div>
+            </div>
           </div>
         </div>
       )}
