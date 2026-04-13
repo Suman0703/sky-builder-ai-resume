@@ -10,30 +10,30 @@ import { useAuth } from '../context/AuthContext'
 const STEPS = ['Personal', 'Objective', 'Education', 'Experience', 'Skills', 'Projects', 'Achievements', 'Certifications', 'Languages', 'Hobbies', 'Summary']
 
 const SKILL_SUGGESTIONS = [
-  'JavaScript','React.js','Node.js','Python','Java','C++','HTML/CSS','MySQL',
-  'MongoDB','Git','REST APIs','Figma','Machine Learning','Docker','TypeScript',
-  'Communication','Teamwork','Problem Solving','Leadership','Time Management',
+  'JavaScript', 'React.js', 'Node.js', 'Python', 'Java', 'C++', 'HTML/CSS', 'MySQL',
+  'MongoDB', 'Git', 'REST APIs', 'Figma', 'Machine Learning', 'Docker', 'TypeScript',
+  'Communication', 'Teamwork', 'Problem Solving', 'Leadership', 'Time Management',
 ]
 
-const emptyEdu         = () => ({ degree:'', institution:'', year:'', grade:'' })
-const emptyExp         = () => ({ title:'', company:'', duration:'', location:'', description:'' })
-const emptyProj        = () => ({ name:'', tech:'', duration:'', description:'' })
-const emptyAchievement = () => ({ title:'', description:'' })
-const emptyCert        = () => ({ name:'', issuer:'', year:'' })
-const emptyLang        = () => ({ language:'', level:'Beginner' })
+const emptyEdu = () => ({ degree: '', institution: '', year: '', grade: '' })
+const emptyExp = () => ({ title: '', company: '', duration: '', location: '', description: '' })
+const emptyProj = () => ({ name: '', tech: '', duration: '', description: '' })
+const emptyAchievement = () => ({ title: '', description: '' })
+const emptyCert = () => ({ name: '', issuer: '', year: '' })
+const emptyLang = () => ({ language: '', level: 'Beginner' })
 
 const defaultData = {
-  personal:       { firstName:'', lastName:'', jobTitle:'', phone:'', email:'', linkedin:'', city:'', github:'' },
-  objective:      '',
-  summary:        '',
-  education:      [emptyEdu()],
-  experience:     [emptyExp()],
-  skills:         [],
-  projects:       [emptyProj()],
-  achievements:   [emptyAchievement()],
+  personal: { firstName: '', lastName: '', jobTitle: '', phone: '', email: '', linkedin: '', city: '', github: '' },
+  objective: '',
+  summary: '',
+  education: [emptyEdu()],
+  experience: [emptyExp()],
+  skills: [],
+  projects: [emptyProj()],
+  achievements: [emptyAchievement()],
   certifications: [emptyCert()],
-  languages:      [emptyLang()],
-  hobbies:        [],
+  languages: [emptyLang()],
+  hobbies: [],
 }
 
 export default function BuilderPage() {
@@ -45,30 +45,30 @@ export default function BuilderPage() {
         localStorage.removeItem('loadResume')
         const parsed = JSON.parse(saved)
         return {
-          personal:       parsed.personal   || defaultData.personal,
-          summary:        parsed.summary    || '',
-          education:      parsed.education?.length  ? parsed.education  : [emptyEdu()],
-          experience:     parsed.experience?.length ? parsed.experience : [emptyExp()],
-          skills:         parsed.skills             || [],
-          projects:       parsed.projects?.length       ? parsed.projects       : [emptyProj()],
-          achievements:   parsed.achievements?.length   ? parsed.achievements   : [emptyAchievement()],
+          personal: parsed.personal || defaultData.personal,
+          summary: parsed.summary || '',
+          education: parsed.education?.length ? parsed.education : [emptyEdu()],
+          experience: parsed.experience?.length ? parsed.experience : [emptyExp()],
+          skills: parsed.skills || [],
+          projects: parsed.projects?.length ? parsed.projects : [emptyProj()],
+          achievements: parsed.achievements?.length ? parsed.achievements : [emptyAchievement()],
           certifications: parsed.certifications?.length ? parsed.certifications : [emptyCert()],
-          languages:      parsed.languages?.length      ? parsed.languages      : [emptyLang()],
-          hobbies:        parsed.hobbies        || [],
+          languages: parsed.languages?.length ? parsed.languages : [emptyLang()],
+          hobbies: parsed.hobbies || [],
         }
       }
-    } catch {}
+    } catch { }
     return defaultData
   })
-  
+
   const [skillInput, setSkillInput] = useState('')
   const [hobbyInput, setHobbyInput] = useState('')
-  const [aiLoading, setAiLoading]   = useState(false)
+  const [aiLoading, setAiLoading] = useState(false)
   const [suggestions, setSuggestions] = useState([])
-  const [saving, setSaving]     = useState(false)
+  const [saving, setSaving] = useState(false)
   const [showPreviewMobile, setShowPreviewMobile] = useState(false)
   const { token } = useAuth()
-  const navigate  = useNavigate()
+  const navigate = useNavigate()
 
   /* ── helpers ── */
   const setPersonal = (key, val) =>
@@ -80,16 +80,16 @@ export default function BuilderPage() {
   const addRow = key => setData(d => ({
     ...d,
     [key]: [...d[key],
-      key === 'education'      ? emptyEdu() :
-      key === 'experience'     ? emptyExp() :
-      key === 'achievements'   ? emptyAchievement() :
-      key === 'certifications' ? emptyCert() :
-      key === 'languages'      ? emptyLang() :
-      emptyProj()
+    key === 'education' ? emptyEdu() :
+      key === 'experience' ? emptyExp() :
+        key === 'achievements' ? emptyAchievement() :
+          key === 'certifications' ? emptyCert() :
+            key === 'languages' ? emptyLang() :
+              emptyProj()
     ]
   }))
-  
-  const removeRow = (key, idx) => setData(d => ({ ...d, [key]: d[key].filter((_,i)=>i!==idx) }))
+
+  const removeRow = (key, idx) => setData(d => ({ ...d, [key]: d[key].filter((_, i) => i !== idx) }))
 
   const addSkill = s => {
     const clean = s.trim()
@@ -98,7 +98,7 @@ export default function BuilderPage() {
     setData(d => ({ ...d, skills: [...d.skills, clean] }))
     setSkillInput('')
   }
-  const removeSkill = s => setData(d => ({ ...d, skills: d.skills.filter(sk=>sk!==s) }))
+  const removeSkill = s => setData(d => ({ ...d, skills: d.skills.filter(sk => sk !== s) }))
 
   const addHobby = s => {
     const clean = s.trim()
@@ -107,7 +107,7 @@ export default function BuilderPage() {
     setData(d => ({ ...d, hobbies: [...d.hobbies, clean] }))
     setHobbyInput('')
   }
-  const removeHobby = s => setData(d => ({ ...d, hobbies: d.hobbies.filter(h=>h!==s) }))
+  const removeHobby = s => setData(d => ({ ...d, hobbies: d.hobbies.filter(h => h !== s) }))
 
   /* ── AI summary ── */
   const generateSummary = async () => {
@@ -118,8 +118,8 @@ export default function BuilderPage() {
       const skillStr = data.skills.join(', ') || 'various technical skills'
       const res = await aiAPI.generateSummary({
         firstName: firstName || 'a student',
-        jobTitle:  jobTitle  || 'a tech role',
-        skills:    skillStr,
+        jobTitle: jobTitle || 'a tech role',
+        skills: skillStr,
       })
       setSuggestions(res.data.suggestions || [])
       toast.success('AI suggestions ready!')
@@ -204,8 +204,8 @@ export default function BuilderPage() {
                 ${i === step
                   ? 'border-blue-700 text-blue-800 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40'
                   : i < step
-                  ? 'border-transparent text-black dark:text-gray-300'
-                  : 'border-transparent text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}>
+                    ? 'border-transparent text-black dark:text-gray-300'
+                    : 'border-transparent text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}>
               <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0
                 ${i === step ? 'bg-blue-800 text-white' : i < step ? 'bg-black text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-500'}`}>
                 {i < step ? '✓' : i + 1}
@@ -243,11 +243,11 @@ export default function BuilderPage() {
           {step === 0 && (
             <FormSection title="Personal Information" desc="Your contact details appear at the top of the resume.">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[['firstName','First Name','Rahul'],['lastName','Last Name','Sharma'],
-                  ['jobTitle','Job Title / Role','Software Engineer'],['phone','Phone','+91 98765 43210'],
-                  ['email','Email','rahul@email.com'],['city','City / Location','Jalandhar, Punjab'],
-                  ['linkedin','LinkedIn','linkedin.com/in/rahul'],['github','GitHub','github.com/rahul']
-                ].map(([key,label,ph]) => (
+                {[['firstName', 'First Name', 'Rahul'], ['lastName', 'Last Name', 'Sharma'],
+                ['jobTitle', 'Job Title / Role', 'Software Engineer'], ['phone', 'Phone', '+91 98765 43210'],
+                ['email', 'Email', 'rahul@email.com'], ['city', 'City / Location', 'Jalandhar, Punjab'],
+                ['linkedin', 'LinkedIn', 'linkedin.com/in/rahul'], ['github', 'GitHub', 'github.com/rahul']
+                ].map(([key, label, ph]) => (
                   <div key={key}>
                     <label className={lbl}>{label}</label>
                     <input className={inp} placeholder={ph} value={data.personal[key]}
@@ -282,9 +282,9 @@ export default function BuilderPage() {
               {data.education.map((edu, i) => (
                 <BlockCard key={i} onRemove={() => removeRow('education', i)} canRemove={data.education.length > 1}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[['degree','Degree / Course','B.Tech Computer Science'],['institution','Institution','LPU / GNDU / IIT Delhi'],
-                      ['year','Year (From – To)','2022 – 2026'],['grade','CGPA / Percentage','8.5 CGPA / 85%']
-                    ].map(([key,label,ph]) => (
+                    {[['degree', 'Degree / Course', 'B.Tech Computer Science'], ['institution', 'Institution', 'LPU / GNDU / IIT Delhi'],
+                    ['year', 'Year (From – To)', '2022 – 2026'], ['grade', 'CGPA / Percentage', '8.5 CGPA / 85%']
+                    ].map(([key, label, ph]) => (
                       <div key={key}>
                         <label className={lbl}>{label}</label>
                         <input className={inp} placeholder={ph} value={edu[key]}
@@ -304,9 +304,9 @@ export default function BuilderPage() {
               {data.experience.map((exp, i) => (
                 <BlockCard key={i} onRemove={() => removeRow('experience', i)} canRemove={data.experience.length > 1}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[['title','Job Title','Software Intern'],['company','Company','Tech Corp Pvt. Ltd.'],
-                      ['duration','Duration','May 2024 – Jul 2024'],['location','Location','Jalandhar / Remote']
-                    ].map(([key,label,ph]) => (
+                    {[['title', 'Job Title', 'Software Intern'], ['company', 'Company', 'Tech Corp Pvt. Ltd.'],
+                    ['duration', 'Duration', 'May 2024 – Jul 2024'], ['location', 'Location', 'Jalandhar / Remote']
+                    ].map(([key, label, ph]) => (
                       <div key={key}>
                         <label className={lbl}>{label}</label>
                         <input className={inp} placeholder={ph} value={exp[key]}
@@ -372,9 +372,9 @@ export default function BuilderPage() {
               {data.projects.map((proj, i) => (
                 <BlockCard key={i} onRemove={() => removeRow('projects', i)} canRemove={data.projects.length > 1}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[['name','Project Name','Sky Builder AI'],['tech','Technologies','React, Node.js, MongoDB'],
-                      ['duration','Duration / Year','Feb 2026']
-                    ].map(([key,label,ph]) => (
+                    {[['name', 'Project Name', 'Sky Builder AI'], ['tech', 'Technologies', 'React, Node.js, MongoDB'],
+                    ['duration', 'Duration / Year', 'Feb 2026']
+                    ].map(([key, label, ph]) => (
                       <div key={key}>
                         <label className={lbl}>{label}</label>
                         <input className={inp} placeholder={ph} value={proj[key]}
@@ -528,14 +528,14 @@ export default function BuilderPage() {
               <textarea className={inp + ' min-h-[120px] resize-y'}
                 placeholder="Write your professional summary here..."
                 value={data.summary} onChange={e => setData(d => ({ ...d, summary: e.target.value }))} />
-              
+
               <div className="mt-4">
-                <button onClick={generateSummary} disabled={aiLoading} 
+                <button onClick={generateSummary} disabled={aiLoading}
                   className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-lg text-sm font-bold hover:bg-blue-200 transition disabled:opacity-60">
                   <Sparkles className="w-4 h-4" />
                   {aiLoading ? 'Generating AI Suggestions...' : '✨ Generate with AI'}
                 </button>
-                
+
                 {suggestions.length > 0 && (
                   <div className="mt-4 space-y-3">
                     <p className="text-xs font-bold text-gray-500 uppercase">Click a suggestion to use it:</p>
@@ -588,10 +588,10 @@ export default function BuilderPage() {
         </aside>
       </div>
 
-      {/* Mobile preview button */}
-      <div className="lg:hidden fixed bottom-5 right-5 z-50">
+      {/* Mobile preview button*/}
+      <div className="lg:hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
         <button onClick={() => setShowPreviewMobile(true)}
-          className="px-5 py-3 rounded-full bg-black text-white font-bold text-sm shadow-xl">
+          className="px-3 py-2 rounded-full bg-black text-white font-bold text-sm shadow-xl whitespace-nowrap">
           👁 Preview
         </button>
       </div>
