@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { ChevronRight, ChevronLeft, Plus, Trash2, Sparkles, Download, Save } from 'lucide-react'
 import Navbar from '../components/Navbar'
-import ResumePreview from '../components/ResumePreview' // Fixed case matching standard imports
+import ResumePreview from '../components/Resumepreview'
 import { resumeAPI, aiAPI } from '../api'
 import { useAuth } from '../context/AuthContext'
 
@@ -227,9 +227,7 @@ export default function BuilderPage() {
         </aside>
 
         {/* ── Form Area ── */}
-        {/* ADDED pb-28 HERE for mobile scroll clearance! */}
-        <main className="flex-1 overflow-y-auto p-4 pb-28 md:p-8 md:pb-8">
-          
+        <main className="flex-1 overflow-y-auto p-6 md:p-8">
           {/* Progress */}
           <div className="mb-6">
             <div className="flex justify-between text-xs text-gray-400 mb-1.5">
@@ -553,20 +551,20 @@ export default function BuilderPage() {
             </FormSection>
           )}
 
-          {/* Nav Buttons - MODIFIED FOR MOBILE FLEXIBILITY */}
-          <div className="flex justify-between gap-3 mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
+          {/* Nav Buttons */}
+          <div className="flex justify-between mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
             <button onClick={() => setStep(s => s - 1)} disabled={step === 0}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-5 py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 font-bold text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition disabled:opacity-30 disabled:cursor-not-allowed">
+              className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 font-bold text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition disabled:opacity-30 disabled:cursor-not-allowed">
               <ChevronLeft className="w-4 h-4" /> Back
             </button>
             {step < STEPS.length - 1 ? (
               <button onClick={() => setStep(s => s + 1)}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition shadow-md">
+                className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition shadow-md">
                 Next <ChevronRight className="w-4 h-4" />
               </button>
             ) : (
               <button onClick={handleSave}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-6 py-3 rounded-xl bg-black hover:bg-gray-800 text-white font-bold text-sm transition shadow-md">
+                className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-black hover:bg-gray-800 text-white font-bold text-sm transition shadow-md">
                 <Save className="w-4 h-4" /> Save Resume
               </button>
             )}
@@ -591,26 +589,22 @@ export default function BuilderPage() {
       </div>
 
       {/* Mobile preview button */}
-      <div className="lg:hidden fixed bottom-6 right-6 z-50">
+      <div className="lg:hidden fixed bottom-5 right-5 z-50">
         <button onClick={() => setShowPreviewMobile(true)}
-          className="flex items-center gap-2 px-6 py-3.5 rounded-full bg-blue-600 text-white font-bold text-sm shadow-xl shadow-blue-900/20 hover:bg-blue-700 transition active:scale-95">
+          className="px-5 py-3 rounded-full bg-black text-white font-bold text-sm shadow-xl">
           👁 Preview
         </button>
       </div>
 
       {/* Mobile preview modal */}
       {showPreviewMobile && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end lg:hidden transition-opacity" onClick={() => setShowPreviewMobile(false)}>
-          <div className="bg-gray-100 w-full max-h-[85vh] overflow-y-auto rounded-t-3xl shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="sticky top-0 bg-white/90 backdrop-blur-md flex items-center justify-between p-4 border-b border-gray-200 z-10">
-              <span className="font-bold text-gray-800">Resume Preview</span>
-              <button onClick={() => setShowPreviewMobile(false)} className="text-gray-500 hover:text-gray-800 text-xl font-bold px-2">×</button>
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-end lg:hidden" onClick={() => setShowPreviewMobile(false)}>
+          <div className="bg-white w-full max-h-[85vh] overflow-y-auto rounded-t-3xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-4 border-b">
+              <span className="font-bold text-gray-700">Resume Preview</span>
+              <button onClick={() => setShowPreviewMobile(false)} className="text-gray-400 text-xl font-bold">×</button>
             </div>
-            <div className="p-4">
-              <div className="bg-white rounded-xl overflow-hidden shadow-md border border-gray-200">
-                <ResumePreview data={data} />
-              </div>
-            </div>
+            <ResumePreview data={data} />
           </div>
         </div>
       )}
