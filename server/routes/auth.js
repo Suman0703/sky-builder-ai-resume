@@ -12,7 +12,7 @@ function generateToken(id) {
 // POST /api/auth/signup
 router.post('/signup', async (req, res) => {
   try {
-    console.log('Signup request received:', req.body)
+    console.log('Signup request received from:', req.body.email)
 
     const { name, email, password } = req.body
 
@@ -35,7 +35,7 @@ router.post('/signup', async (req, res) => {
       password: hashedPassword
     })
 
-    console.log('User created:', user._id)
+    console.log('New user created successfully')
 
     const token = generateToken(user._id)
     return res.status(201).json({
@@ -51,7 +51,7 @@ router.post('/signup', async (req, res) => {
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
   try {
-    console.log('Login request received:', req.body)
+    console.log('Login attempt from:', req.body.email)
 
     const { email, password } = req.body
 
