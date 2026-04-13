@@ -1,16 +1,28 @@
-# React + Vite
+# Sky Builder - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the client-side application for **Sky Builder**, an AI-powered resume generation platform. Built with a modern tech stack, it provides users with a seamless, real-time experience to create professional, ATS-friendly resumes effortlessly.
 
-Currently, two official plugins are available:
+## 🚀 Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+* **Framework:** React.js powered by Vite (for lightning-fast compilation)
+* **Styling:** Tailwind CSS (custom blue, white, and black theme)
+* **Routing:** React Router v6
+* **State Management:** React Context API (Auth & Theme)
 
-## React Compiler
+## ✨ Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **11-Step Guided Builder:** A smooth UI taking users through Personal Info, Career Objective, Education, Experience, Skills, Projects, Achievements, Certifications, Languages, Hobbies, and Summary.
+* **Real-Time Live Preview:** See exactly how the resume looks as you type.
+* **AI-Powered Summary:** Integrates with Groq's LLaMA model (via backend) to generate instant, professional summary suggestions based on user input.
+* **Smart Theming:** Light mode by default with a seamless Dark Mode toggle.
+* **One-Click Export:** Download the finished resume directly as a beautifully formatted PDF.
+* **Secure Access:** Protected routes requiring JWT authentication to build and save resumes.
 
-## Expanding the ESLint configuration
+## 🛠️ Local Setup Instructions
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Follow these steps to run the frontend on your local machine:
+
+**1. Install dependencies**
+Make sure you are in the `client` directory, then run:
+```bash
+npm install
