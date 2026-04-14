@@ -66,17 +66,13 @@ export default function BuilderPage() {
   const [hobbyInput, setHobbyInput] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
   const [suggestions, setSuggestions] = useState([])
-
-  // NEW: States for AI Objective
   const [objAiLoading, setObjAiLoading] = useState(false)
   const [objSuggestions, setObjSuggestions] = useState([])
-
   const [saving, setSaving] = useState(false)
   const [showPreviewMobile, setShowPreviewMobile] = useState(false)
   const { token } = useAuth()
   const navigate = useNavigate()
 
-  /* ── helpers ── */
   const setPersonal = (key, val) =>
     setData(d => ({ ...d, personal: { ...d.personal, [key]: val } }))
 
@@ -86,12 +82,12 @@ export default function BuilderPage() {
   const addRow = key => setData(d => ({
     ...d,
     [key]: [...d[key],
-    key === 'education' ? emptyEdu() :
+      key === 'education' ? emptyEdu() :
       key === 'experience' ? emptyExp() :
-        key === 'achievements' ? emptyAchievement() :
-          key === 'certifications' ? emptyCert() :
-            key === 'languages' ? emptyLang() :
-              emptyProj()
+      key === 'achievements' ? emptyAchievement() :
+      key === 'certifications' ? emptyCert() :
+      key === 'languages' ? emptyLang() :
+      emptyProj()
     ]
   }))
 
@@ -115,7 +111,6 @@ export default function BuilderPage() {
   }
   const removeHobby = s => setData(d => ({ ...d, hobbies: d.hobbies.filter(h => h !== s) }))
 
-  /* ── AI summary ── */
   const generateSummary = async () => {
     setAiLoading(true)
     setSuggestions([])
@@ -130,15 +125,12 @@ export default function BuilderPage() {
       setSuggestions(res.data.suggestions || [])
       toast.success('AI suggestions ready!')
     } catch (err) {
-      const msg = err.response?.data?.message || 'AI unavailable'
-      toast.error(msg)
-      console.error('AI error:', msg)
+      toast.error(err.response?.data?.message || 'AI unavailable')
     } finally {
       setAiLoading(false)
     }
   }
 
-  /* ── AI Objective ── */
   const generateObjective = async () => {
     setObjAiLoading(true)
     setObjSuggestions([])
@@ -153,14 +145,12 @@ export default function BuilderPage() {
       setObjSuggestions(res.data.suggestions || [])
       toast.success('AI Objectives ready!')
     } catch (err) {
-      const msg = err.response?.data?.message || 'AI unavailable'
-      toast.error(msg)
+      toast.error(err.response?.data?.message || 'AI unavailable')
     } finally {
       setObjAiLoading(false)
     }
   }
 
-  /* ── Save ── */
   const handleSave = async () => {
     setSaving(true)
     try {
@@ -173,74 +163,49 @@ export default function BuilderPage() {
     }
   }
 
- /* Print/PDF */
+  /* ── PDF Download ── */
   const handleDownload = () => {
-    const content = document.getElementById('resume-preview').innerHTML
+    const previewEl = document.getElementById('resume-preview')
+    if (!previewEl) { toast.error('Preview not found'); return }
+    const resumeHTML = previewEl.outerHTML
     const w = window.open('', '_blank')
-    w.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="UTF-8">
-          <title>Professional Resume</title>
-          <link rel="preconnect" href="https://fonts.googleapis.com">
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-          <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-          <script src="https://cdn.tailwindcss.com"></script>
-          <style>
-            @page { size: A4; margin: 0; }
-            body { 
-              font-family: 'Inter', system-ui, sans-serif;
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
-              background: white;
-            }
-            .print-wrapper {
-              width: 210mm;
-              min-height: 297mm;
-              margin: 0 auto;
-              background: white;
-              padding: 12mm 0; /* Standard top/bottom document margins */
-            }
-            
-            /* Tighter Spacing for standard single-page fit */
-            .p-10 { padding: 1.5rem 2rem !important; } 
-            
-            .space-y-5 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem !important; }
-            .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem !important; }
-            
-            .mb-6 { margin-bottom: 1.25rem !important; }
-            .mb-3 { margin-bottom: 0.5rem !important; }
-            
-            /* Typography adjustments for print */
-            h1 { letter-spacing: 0.05em !important; }
-            p, span, li { line-height: 1.45 !important; color: #111 !important; }
-            .italic { font-style: italic; }
-            
-            /* Ensure bullets render properly */
-            ul.list-disc { padding-left: 1.2rem; }
-            
-            section { break-inside: avoid; page-break-inside: avoid; }
-          </style>
-        </head>
-        <body>
-          <div class="print-wrapper">
-            ${content}
-          </div>
-          <script>
-            setTimeout(() => { 
-              window.print(); 
-              window.close(); 
-            }, 1200);
-          </script>
-        </body>
-      </html>
-    `)
+    w.document.write(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${(data.personal.firstName + ' ' + data.personal.lastName).trim() || 'Resume'}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: #fff;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    @page {
+      size: A4;
+      margin: 0;
+    }
+    @media print {
+      html, body { background: #fff; }
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      head, header { display: none !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;">
+  ${resumeHTML}
+  <script>
+    window.onload = function() {
+      setTimeout(function() { window.print(); }, 800);
+    }
+  </script>
+</body>
+</html>`)
     w.document.close()
   }
+
   const progress = Math.round(((step + 1) / STEPS.length) * 100)
 
-  /* ── shared input classes ── */
   const inp = 'w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition text-sm'
   const lbl = 'block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1'
 
@@ -250,7 +215,7 @@ export default function BuilderPage() {
 
       <div className="flex flex-1 overflow-hidden" style={{ height: 'calc(100vh - 60px)' }}>
 
-        {/* ── Sidebar ── */}
+        {/* Sidebar */}
         <aside className="hidden md:flex w-48 flex-col bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 py-6 flex-shrink-0">
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-5 mb-3">Steps</p>
           {STEPS.map((s, i) => (
@@ -268,7 +233,6 @@ export default function BuilderPage() {
               {s}
             </button>
           ))}
-
           <div className="mt-auto px-4 space-y-2">
             <button onClick={handleSave} disabled={saving}
               className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 text-xs font-bold border border-blue-100 dark:border-blue-900 hover:bg-blue-100 transition disabled:opacity-60">
@@ -281,9 +245,8 @@ export default function BuilderPage() {
           </div>
         </aside>
 
-        {/* ── Form Area ── */}
+        {/* Form Area */}
         <main className="flex-1 overflow-y-auto p-6 pb-28 md:p-8">
-          {/* Progress */}
           <div className="mb-6">
             <div className="flex justify-between text-xs text-gray-400 mb-1.5">
               <span>Step {step + 1} of {STEPS.length} — <span className="font-semibold text-gray-600 dark:text-gray-300">{STEPS[step]}</span></span>
@@ -294,15 +257,14 @@ export default function BuilderPage() {
             </div>
           </div>
 
-          {/* ── STEP 0: Personal ── */}
           {step === 0 && (
             <FormSection title="Personal Information" desc="Your contact details appear at the top of the resume.">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[['firstName', 'First Name', 'Suman'], ['lastName', 'Last Name', 'Devi'],
-                ['jobTitle', 'Job Title / Role', 'Software Engineer'], ['phone', 'Phone', '+91 98765 43210'],
-                ['email', 'Email', 'suman@email.com'], ['city', 'City / Location', 'Jalandhar, Punjab'],
-                ['linkedin', 'LinkedIn', 'linkedin.com/in/suman0307'], ['github', 'GitHub', 'github.com/suman0307']
-                ].map(([key, label, ph]) => (
+                {[['firstName','First Name','Suman'],['lastName','Last Name','Devi'],
+                  ['jobTitle','Job Title / Role','Software Engineer'],['phone','Phone','+91 98765 43210'],
+                  ['email','Email','suman@email.com'],['city','City / Location','Jalandhar, Punjab'],
+                  ['linkedin','LinkedIn','linkedin.com/in/suman0307'],['github','GitHub','github.com/suman0307']
+                ].map(([key,label,ph]) => (
                   <div key={key}>
                     <label className={lbl}>{label}</label>
                     <input className={inp} placeholder={ph} value={data.personal[key]}
@@ -313,20 +275,17 @@ export default function BuilderPage() {
             </FormSection>
           )}
 
-          {/* ── STEP 1: Objective ── */}
           {step === 1 && (
             <FormSection title="Career Objective" desc="A short goal statement for your career.">
               <textarea className={inp + ' min-h-[110px] resize-y'}
                 placeholder="e.g. Motivated student seeking..."
                 value={data.objective} onChange={e => setData(d => ({ ...d, objective: e.target.value }))} />
-
               <div className="mt-4">
                 <button onClick={generateObjective} disabled={objAiLoading}
                   className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-lg text-sm font-bold hover:bg-blue-200 transition disabled:opacity-60">
                   <Sparkles className="w-4 h-4" />
                   {objAiLoading ? 'Generating...' : '✨ Generate Objective with AI'}
                 </button>
-
                 {objSuggestions.length > 0 && (
                   <div className="mt-4 space-y-3">
                     <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Click a suggestion to use it:</p>
@@ -342,15 +301,14 @@ export default function BuilderPage() {
             </FormSection>
           )}
 
-          {/* ── STEP 2: Education ── */}
           {step === 2 && (
             <FormSection title="Education" desc="Add your qualifications, starting with the most recent.">
               {data.education.map((edu, i) => (
                 <BlockCard key={i} onRemove={() => removeRow('education', i)} canRemove={data.education.length > 1}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[['degree', 'Degree / Course', 'B.Tech Computer Science'], ['institution', 'Institution', 'LPU / GNDU / IIT Delhi'],
-                    ['year', 'Year (From – To)', '2022 – 2026'], ['grade', 'CGPA / Percentage', '8.5 CGPA / 85%']
-                    ].map(([key, label, ph]) => (
+                    {[['degree','Degree / Course','B.Tech Computer Science'],['institution','Institution','LPU / GNDU / IIT Delhi'],
+                      ['year','Year (From – To)','2022 – 2026'],['grade','CGPA / Percentage','8.5 CGPA / 85%']
+                    ].map(([key,label,ph]) => (
                       <div key={key}>
                         <label className={lbl}>{label}</label>
                         <input className={inp} placeholder={ph} value={edu[key]}
@@ -364,15 +322,14 @@ export default function BuilderPage() {
             </FormSection>
           )}
 
-          {/* ── STEP 3: Experience ── */}
           {step === 3 && (
             <FormSection title="Work Experience" desc="Add internships, jobs, or freelance work. Freshers can skip.">
               {data.experience.map((exp, i) => (
                 <BlockCard key={i} onRemove={() => removeRow('experience', i)} canRemove={data.experience.length > 1}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[['title', 'Job Title', 'Software Intern'], ['company', 'Company', 'Tech Corp Pvt. Ltd.'],
-                    ['duration', 'Duration', 'May 2024 – Jul 2024'], ['location', 'Location', 'Jalandhar / Remote']
-                    ].map(([key, label, ph]) => (
+                    {[['title','Job Title','Software Intern'],['company','Company','Tech Corp Pvt. Ltd.'],
+                      ['duration','Duration','May 2024 – Jul 2024'],['location','Location','Jalandhar / Remote']
+                    ].map(([key,label,ph]) => (
                       <div key={key}>
                         <label className={lbl}>{label}</label>
                         <input className={inp} placeholder={ph} value={exp[key]}
@@ -383,7 +340,7 @@ export default function BuilderPage() {
                   <div className="mt-3">
                     <label className={lbl}>Responsibilities (one per line)</label>
                     <textarea className={inp + ' min-h-[90px] resize-y'}
-                      placeholder={"- Developed REST APIs using Node.js\n- Improved query performance by 40%\n- Collaborated in agile team of 5"}
+                      placeholder={"- Developed REST APIs using Node.js\n- Improved query performance by 40%"}
                       value={exp.description} onChange={e => setArr('experience', i, 'description', e.target.value)} />
                   </div>
                 </BlockCard>
@@ -392,30 +349,24 @@ export default function BuilderPage() {
             </FormSection>
           )}
 
-          {/* ── STEP 4: Skills ── */}
           {step === 4 && (
-            <FormSection title="Skills" desc="Add your technical and soft skills. Click suggestions or type your own.">
+            <FormSection title="Skills" desc="Add your technical and soft skills.">
               <div className="flex gap-2">
                 <input className={inp} placeholder="Type a skill and press Enter or Add"
                   value={skillInput} onChange={e => setSkillInput(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSkill(skillInput))} />
                 <button onClick={() => addSkill(skillInput)}
-                  className="px-4 py-2.5 rounded-xl bg-blue-800 hover:bg-blue-900 text-white font-bold text-sm transition flex-shrink-0">
-                  Add
-                </button>
+                  className="px-4 py-2.5 rounded-xl bg-blue-800 hover:bg-blue-900 text-white font-bold text-sm transition flex-shrink-0">Add</button>
               </div>
-
               {data.skills.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-4">
                   {data.skills.map(s => (
                     <span key={s} className="flex items-center gap-1.5 bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-700 rounded-full px-3 py-1 text-xs font-bold">
-                      {s}
-                      <button onClick={() => removeSkill(s)} className="text-blue-500 hover:text-red-500 transition">×</button>
+                      {s}<button onClick={() => removeSkill(s)} className="text-blue-500 hover:text-red-500 transition">×</button>
                     </span>
                   ))}
                 </div>
               )}
-
               <div className="mt-5">
                 <p className="text-xs text-gray-400 font-bold uppercase tracking-wide mb-2">Quick add:</p>
                 <div className="flex flex-wrap gap-2">
@@ -430,15 +381,14 @@ export default function BuilderPage() {
             </FormSection>
           )}
 
-          {/* ── STEP 5: Projects ── */}
           {step === 5 && (
             <FormSection title="Projects" desc="Showcase your best college, personal, or open-source projects.">
               {data.projects.map((proj, i) => (
                 <BlockCard key={i} onRemove={() => removeRow('projects', i)} canRemove={data.projects.length > 1}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[['name', 'Project Name', 'Sky Builder AI'], ['tech', 'Technologies', 'React, Node.js, MongoDB'],
-                    ['duration', 'Duration / Year', 'Feb 2026']
-                    ].map(([key, label, ph]) => (
+                    {[['name','Project Name','Sky Builder AI'],['tech','Technologies','React, Node.js, MongoDB'],
+                      ['duration','Duration / Year','Feb 2026']
+                    ].map(([key,label,ph]) => (
                       <div key={key}>
                         <label className={lbl}>{label}</label>
                         <input className={inp} placeholder={ph} value={proj[key]}
@@ -449,7 +399,7 @@ export default function BuilderPage() {
                   <div className="mt-3">
                     <label className={lbl}>Description (one per line)</label>
                     <textarea className={inp + ' min-h-[90px] resize-y'}
-                      placeholder={"- Built a web-based resume builder using React.js\n- Implemented AI suggestions using Claude API\n- Integrated PDF download feature"}
+                      placeholder={"- Built a web-based resume builder using React.js\n- Implemented AI suggestions"}
                       value={proj.description} onChange={e => setArr('projects', i, 'description', e.target.value)} />
                   </div>
                 </BlockCard>
@@ -458,7 +408,6 @@ export default function BuilderPage() {
             </FormSection>
           )}
 
-          {/* ── STEP 6: Achievements ── */}
           {step === 6 && (
             <FormSection title="Achievements" desc="Awards, honours, hackathon wins, or any notable accomplishments.">
               {data.achievements.map((ach, i) => (
@@ -487,32 +436,23 @@ export default function BuilderPage() {
             </FormSection>
           )}
 
-          {/* ── STEP 7: Certifications ── */}
           {step === 7 && (
             <FormSection title="Certifications" desc="Online courses, training programs, or professional certificates.">
               {data.certifications.map((cert, i) => (
                 <BlockCard key={i} onRemove={() => removeRow('certifications', i)} canRemove={data.certifications.length > 1}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className={lbl}>Certificate Name</label>
+                    <div><label className={lbl}>Certificate Name</label>
                       <input className={inp} placeholder="Full Stack Web Development"
-                        value={cert.name} onChange={e => setArr('certifications', i, 'name', e.target.value)} />
-                    </div>
-                    <div>
-                      <label className={lbl}>Issued By</label>
+                        value={cert.name} onChange={e => setArr('certifications', i, 'name', e.target.value)} /></div>
+                    <div><label className={lbl}>Issued By</label>
                       <input className={inp} placeholder="Coursera / Udemy / NPTEL"
-                        value={cert.issuer} onChange={e => setArr('certifications', i, 'issuer', e.target.value)} />
-                    </div>
-                    <div>
-                      <label className={lbl}>Year</label>
+                        value={cert.issuer} onChange={e => setArr('certifications', i, 'issuer', e.target.value)} /></div>
+                    <div><label className={lbl}>Year</label>
                       <input className={inp} placeholder="2024"
-                        value={cert.year} onChange={e => setArr('certifications', i, 'year', e.target.value)} />
-                    </div>
-                    <div>
-                      <label className={lbl}>Credential URL (optional)</label>
+                        value={cert.year} onChange={e => setArr('certifications', i, 'year', e.target.value)} /></div>
+                    <div><label className={lbl}>Credential URL (optional)</label>
                       <input className={inp} placeholder="coursera.org/verify/xxxxx"
-                        value={cert.url || ''} onChange={e => setArr('certifications', i, 'url', e.target.value)} />
-                    </div>
+                        value={cert.url || ''} onChange={e => setArr('certifications', i, 'url', e.target.value)} /></div>
                   </div>
                 </BlockCard>
               ))}
@@ -520,27 +460,20 @@ export default function BuilderPage() {
             </FormSection>
           )}
 
-          {/* ── STEP 8: Languages ── */}
           {step === 8 && (
             <FormSection title="Languages" desc="Languages you can speak, read or write.">
               {data.languages.map((lang, i) => (
                 <BlockCard key={i} onRemove={() => removeRow('languages', i)} canRemove={data.languages.length > 1}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className={lbl}>Language</label>
+                    <div><label className={lbl}>Language</label>
                       <input className={inp} placeholder="English / Hindi / Punjabi"
-                        value={lang.language} onChange={e => setArr('languages', i, 'language', e.target.value)} />
-                    </div>
-                    <div>
-                      <label className={lbl}>Proficiency Level</label>
+                        value={lang.language} onChange={e => setArr('languages', i, 'language', e.target.value)} /></div>
+                    <div><label className={lbl}>Proficiency Level</label>
                       <select className={inp} value={lang.level}
                         onChange={e => setArr('languages', i, 'level', e.target.value)}>
-                        <option>Native</option>
-                        <option>Fluent</option>
-                        <option>Intermediate</option>
-                        <option>Beginner</option>
-                      </select>
-                    </div>
+                        <option>Native</option><option>Fluent</option>
+                        <option>Intermediate</option><option>Beginner</option>
+                      </select></div>
                   </div>
                 </BlockCard>
               ))}
@@ -548,7 +481,6 @@ export default function BuilderPage() {
             </FormSection>
           )}
 
-          {/* ── STEP 9: Hobbies ── */}
           {step === 9 && (
             <FormSection title="Hobbies & Interests" desc="Show your personality — add hobbies and interests outside work.">
               <div className="flex gap-2">
@@ -556,16 +488,13 @@ export default function BuilderPage() {
                   value={hobbyInput} onChange={e => setHobbyInput(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addHobby(hobbyInput))} />
                 <button onClick={() => addHobby(hobbyInput)}
-                  className="px-4 py-2.5 rounded-xl bg-blue-800 hover:bg-blue-900 text-white font-bold text-sm transition flex-shrink-0">
-                  Add
-                </button>
+                  className="px-4 py-2.5 rounded-xl bg-blue-800 hover:bg-blue-900 text-white font-bold text-sm transition flex-shrink-0">Add</button>
               </div>
               {data.hobbies.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-4">
                   {data.hobbies.map(h => (
                     <span key={h} className="flex items-center gap-1.5 bg-blue-50 text-blue-800 border border-blue-200 rounded-full px-3 py-1 text-xs font-bold">
-                      {h}
-                      <button onClick={() => removeHobby(h)} className="text-blue-400 hover:text-red-500 transition">×</button>
+                      {h}<button onClick={() => removeHobby(h)} className="text-blue-400 hover:text-red-500 transition">×</button>
                     </span>
                   ))}
                 </div>
@@ -573,8 +502,8 @@ export default function BuilderPage() {
               <div className="mt-5">
                 <p className="text-xs text-gray-400 font-bold uppercase tracking-wide mb-2">Quick add:</p>
                 <div className="flex flex-wrap gap-2">
-                  {['Reading', 'Coding', 'Gaming', 'Photography', 'Travelling', 'Music', 'Cricket', 'Football',
-                    'Badminton', 'Painting', 'Cooking', 'Blogging', 'Yoga', 'Dancing', 'Volunteering'
+                  {['Reading','Coding','Gaming','Photography','Travelling','Music','Cricket','Football',
+                    'Badminton','Painting','Cooking','Blogging','Yoga','Dancing','Volunteering'
                   ].filter(h => !data.hobbies.includes(h)).map(h => (
                     <button key={h} onClick={() => addHobby(h)}
                       className="px-3 py-1 rounded-full border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-xs font-semibold hover:border-blue-400 hover:text-blue-700 hover:bg-blue-50 transition">
@@ -586,20 +515,17 @@ export default function BuilderPage() {
             </FormSection>
           )}
 
-          {/* ── STEP 10: Summary ── */}
           {step === 10 && (
             <FormSection title="Professional Summary" desc="A brief overview of your background and skills.">
               <textarea className={inp + ' min-h-[120px] resize-y'}
                 placeholder="Write your professional summary here..."
                 value={data.summary} onChange={e => setData(d => ({ ...d, summary: e.target.value }))} />
-
               <div className="mt-4">
                 <button onClick={generateSummary} disabled={aiLoading}
                   className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-800 rounded-lg text-sm font-bold hover:bg-blue-200 transition disabled:opacity-60">
                   <Sparkles className="w-4 h-4" />
                   {aiLoading ? 'Generating AI Suggestions...' : '✨ Generate with AI'}
                 </button>
-
                 {suggestions.length > 0 && (
                   <div className="mt-4 space-y-3">
                     <p className="text-xs font-bold text-gray-500 uppercase">Click a suggestion to use it:</p>
@@ -635,7 +561,7 @@ export default function BuilderPage() {
           </div>
         </main>
 
-        {/* ── Live Preview (desktop) ── */}
+        {/* Live Preview desktop */}
         <aside className="hidden lg:flex flex-col w-[420px] flex-shrink-0 bg-gray-100 dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 overflow-y-auto">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
             <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Live Preview</span>
@@ -652,7 +578,7 @@ export default function BuilderPage() {
         </aside>
       </div>
 
-      {/* Mobile preview button*/}
+      {/* Mobile preview button */}
       <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
         <button onClick={() => setShowPreviewMobile(true)}
           className="px-5 py-3 rounded-full bg-black text-white font-bold text-sm shadow-xl whitespace-nowrap">
@@ -662,36 +588,24 @@ export default function BuilderPage() {
 
       {/* Mobile preview modal */}
       {showPreviewMobile && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end lg:hidden transition-opacity" onClick={() => setShowPreviewMobile(false)}>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end lg:hidden" onClick={() => setShowPreviewMobile(false)}>
           <div className="bg-gray-100 w-full max-h-[85vh] overflow-y-auto rounded-t-3xl shadow-2xl" onClick={e => e.stopPropagation()}>
-            
-            {/* STICKY HEADER WITH PDF BUTTON */}
             <div className="sticky top-0 bg-white/95 backdrop-blur-md flex items-center justify-between p-4 border-b border-gray-200 z-10">
               <span className="font-bold text-gray-800 text-lg">Preview</span>
-
               <div className="flex items-center gap-4">
-                <button 
-                  onClick={handleDownload} 
-                  className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold shadow-md hover:bg-blue-700 transition active:scale-95"
-                >
+                <button onClick={handleDownload}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold shadow-md hover:bg-blue-700 transition active:scale-95">
                   <Download className="w-4 h-4" /> Save PDF
                 </button>
-                <button 
-                  onClick={() => setShowPreviewMobile(false)} 
-                  className="text-gray-400 hover:text-gray-800 text-3xl leading-none font-light px-1 mb-1"
-                >
-                  &times;
-                </button>
+                <button onClick={() => setShowPreviewMobile(false)}
+                  className="text-gray-400 hover:text-gray-800 text-3xl leading-none font-light px-1 mb-1">&times;</button>
               </div>
             </div>
-
-            {/* Resume Content */}
             <div className="p-4">
               <div className="bg-white rounded-xl overflow-hidden shadow-md border border-gray-200">
                 <ResumePreview data={data} />
               </div>
             </div>
-            
           </div>
         </div>
       )}
@@ -699,7 +613,6 @@ export default function BuilderPage() {
   )
 }
 
-/* ── Sub-components ── */
 function FormSection({ title, desc, children }) {
   return (
     <div>
