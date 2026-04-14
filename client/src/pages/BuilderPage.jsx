@@ -74,13 +74,17 @@ export default function BuilderPage() {
 
   const navigate = useNavigate()
   /* ── Auto-Scroll to Top on Step Change ── */
-  const mainRef = useRef(null)
-
+ const mainRef = useRef(null)
+  
   useEffect(() => {
-    if (mainRef.current) {
-      mainRef.current.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-  }, [step])
+    const timer = setTimeout(() => {
+      if (mainRef.current) {
+        mainRef.current.scrollTop = 0;
+      }
+      window.scrollTo(0, 0);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [step]);
 
   const setPersonal = (key, val) =>
     setData(d => ({ ...d, personal: { ...d.personal, [key]: val } }))
