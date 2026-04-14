@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { ChevronRight, ChevronLeft, Plus, Trash2, Sparkles, Download, Save } from 'lucide-react'
@@ -71,7 +71,16 @@ export default function BuilderPage() {
   const [saving, setSaving] = useState(false)
   const [showPreviewMobile, setShowPreviewMobile] = useState(false)
   const { token } = useAuth()
+
   const navigate = useNavigate()
+  /* ── Auto-Scroll to Top on Step Change ── */
+  const mainRef = useRef(null)
+
+  useEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [step])
 
   const setPersonal = (key, val) =>
     setData(d => ({ ...d, personal: { ...d.personal, [key]: val } }))
@@ -82,12 +91,12 @@ export default function BuilderPage() {
   const addRow = key => setData(d => ({
     ...d,
     [key]: [...d[key],
-      key === 'education' ? emptyEdu() :
+    key === 'education' ? emptyEdu() :
       key === 'experience' ? emptyExp() :
-      key === 'achievements' ? emptyAchievement() :
-      key === 'certifications' ? emptyCert() :
-      key === 'languages' ? emptyLang() :
-      emptyProj()
+        key === 'achievements' ? emptyAchievement() :
+          key === 'certifications' ? emptyCert() :
+            key === 'languages' ? emptyLang() :
+              emptyProj()
     ]
   }))
 
@@ -246,7 +255,7 @@ export default function BuilderPage() {
         </aside>
 
         {/* Form Area */}
-        <main className="flex-1 overflow-y-auto p-6 pb-28 md:p-8">
+        <main ref={mainRef} className="flex-1 overflow-y-auto p-6 pb-28 md:p-8">
           <div className="mb-6">
             <div className="flex justify-between text-xs text-gray-400 mb-1.5">
               <span>Step {step + 1} of {STEPS.length} — <span className="font-semibold text-gray-600 dark:text-gray-300">{STEPS[step]}</span></span>
@@ -260,11 +269,11 @@ export default function BuilderPage() {
           {step === 0 && (
             <FormSection title="Personal Information" desc="Your contact details appear at the top of the resume.">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[['firstName','First Name','Suman'],['lastName','Last Name','Devi'],
-                  ['jobTitle','Job Title / Role','Software Engineer'],['phone','Phone','+91 98765 43210'],
-                  ['email','Email','suman@email.com'],['city','City / Location','Jalandhar, Punjab'],
-                  ['linkedin','LinkedIn','linkedin.com/in/suman0307'],['github','GitHub','github.com/suman0307']
-                ].map(([key,label,ph]) => (
+                {[['firstName', 'First Name', 'Suman'], ['lastName', 'Last Name', 'Devi'],
+                ['jobTitle', 'Job Title / Role', 'Software Engineer'], ['phone', 'Phone', '+91 98765 43210'],
+                ['email', 'Email', 'suman@email.com'], ['city', 'City / Location', 'Jalandhar, Punjab'],
+                ['linkedin', 'LinkedIn', 'linkedin.com/in/suman0307'], ['github', 'GitHub', 'github.com/suman0307']
+                ].map(([key, label, ph]) => (
                   <div key={key}>
                     <label className={lbl}>{label}</label>
                     <input className={inp} placeholder={ph} value={data.personal[key]}
@@ -306,9 +315,9 @@ export default function BuilderPage() {
               {data.education.map((edu, i) => (
                 <BlockCard key={i} onRemove={() => removeRow('education', i)} canRemove={data.education.length > 1}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[['degree','Degree / Course','B.Tech Computer Science'],['institution','Institution','LPU / GNDU / IIT Delhi'],
-                      ['year','Year (From – To)','2022 – 2026'],['grade','CGPA / Percentage','8.5 CGPA / 85%']
-                    ].map(([key,label,ph]) => (
+                    {[['degree', 'Degree / Course', 'B.Tech Computer Science'], ['institution', 'Institution', 'LPU / GNDU / IIT Delhi'],
+                    ['year', 'Year (From – To)', '2022 – 2026'], ['grade', 'CGPA / Percentage', '8.5 CGPA / 85%']
+                    ].map(([key, label, ph]) => (
                       <div key={key}>
                         <label className={lbl}>{label}</label>
                         <input className={inp} placeholder={ph} value={edu[key]}
@@ -327,9 +336,9 @@ export default function BuilderPage() {
               {data.experience.map((exp, i) => (
                 <BlockCard key={i} onRemove={() => removeRow('experience', i)} canRemove={data.experience.length > 1}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[['title','Job Title','Software Intern'],['company','Company','Tech Corp Pvt. Ltd.'],
-                      ['duration','Duration','May 2024 – Jul 2024'],['location','Location','Jalandhar / Remote']
-                    ].map(([key,label,ph]) => (
+                    {[['title', 'Job Title', 'Software Intern'], ['company', 'Company', 'Tech Corp Pvt. Ltd.'],
+                    ['duration', 'Duration', 'May 2024 – Jul 2024'], ['location', 'Location', 'Jalandhar / Remote']
+                    ].map(([key, label, ph]) => (
                       <div key={key}>
                         <label className={lbl}>{label}</label>
                         <input className={inp} placeholder={ph} value={exp[key]}
@@ -386,9 +395,9 @@ export default function BuilderPage() {
               {data.projects.map((proj, i) => (
                 <BlockCard key={i} onRemove={() => removeRow('projects', i)} canRemove={data.projects.length > 1}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[['name','Project Name','Sky Builder AI'],['tech','Technologies','React, Node.js, MongoDB'],
-                      ['duration','Duration / Year','Feb 2026']
-                    ].map(([key,label,ph]) => (
+                    {[['name', 'Project Name', 'Sky Builder AI'], ['tech', 'Technologies', 'React, Node.js, MongoDB'],
+                    ['duration', 'Duration / Year', 'Feb 2026']
+                    ].map(([key, label, ph]) => (
                       <div key={key}>
                         <label className={lbl}>{label}</label>
                         <input className={inp} placeholder={ph} value={proj[key]}
@@ -502,8 +511,8 @@ export default function BuilderPage() {
               <div className="mt-5">
                 <p className="text-xs text-gray-400 font-bold uppercase tracking-wide mb-2">Quick add:</p>
                 <div className="flex flex-wrap gap-2">
-                  {['Reading','Coding','Gaming','Photography','Travelling','Music','Cricket','Football',
-                    'Badminton','Painting','Cooking','Blogging','Yoga','Dancing','Volunteering'
+                  {['Reading', 'Coding', 'Gaming', 'Photography', 'Travelling', 'Music', 'Cricket', 'Football',
+                    'Badminton', 'Painting', 'Cooking', 'Blogging', 'Yoga', 'Dancing', 'Volunteering'
                   ].filter(h => !data.hobbies.includes(h)).map(h => (
                     <button key={h} onClick={() => addHobby(h)}
                       className="px-3 py-1 rounded-full border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-xs font-semibold hover:border-blue-400 hover:text-blue-700 hover:bg-blue-50 transition">
